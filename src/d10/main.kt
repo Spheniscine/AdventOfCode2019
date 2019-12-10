@@ -43,7 +43,7 @@ fun main() {
 
     val V = vmap.entries.sortedWith(Comparator { a, b -> compareAngle(a.key, b.key) })
 
-    // test(V)
+    //test(V)
 
     val seq = sequence {
         val Vi = ArrayDeque<ListIterator<Vec2>>()
@@ -69,15 +69,19 @@ fun compareAngle(a: Vec2, b: Vec2): Int {
     val db = b.x < 0
     return when {
         da != db -> da.compareTo(db)
-        a.x == 0 && b.x == 0 -> a.y.compareTo(b.y)
+        a.x == 0 && b.x == 0 -> a.y.sign.compareTo(b.y.sign)
         else -> (b cross a).sign
     }
 }
 
-private fun test(V: List<Map.Entry<Vec2, MutableList<Vec2>>>) {
+private fun test(V: List<Map.Entry<Vec2, List<Vec2>>>) {
     for(i in 0 until V.lastIndex) {
+        require(compareAngle(V[i].key, V[i].key) == 0)
         for(j in i+1..V.lastIndex) {
             require(compareAngle(V[i].key, V[j].key) == -1)
+            require(compareAngle(V[j].key, V[i].key) == 1)
         }
     }
+
+    println("Test passed.")
 }
