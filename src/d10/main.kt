@@ -8,15 +8,15 @@ import kotlin.math.*
 private val input by lazy { File("src/d10/input/gmail.in").readText() }
 
 fun main() {
-    val A = HashSet<Pos2>()
+    val A = mutableListOf<Vec2>()
     input.lineSequence().forEachIndexed { y, ln ->
         ln.forEachIndexed { x, c ->
-            if(c == '#') A.add(Pos2(x, y))
+            if(c == '#') A.add(Vec2(x, y))
         }
     }
 
     val (best, ans1) = A.map { a ->
-        val B = HashSet<Pos2>()
+        val B = HashSet<Vec2>()
         for(b in A) {
             if(a != b) B.add((b-a).normalize())
         }
@@ -25,7 +25,7 @@ fun main() {
 
     println("Part 1: $ans1")
 
-    val vmap = HashMap<Pos2, MutableList<Pos2>>().memoize { mutableListOf() }
+    val vmap = HashMap<Vec2, MutableList<Vec2>>().memoize { mutableListOf() }
 
     for(a in A) {
         if(a == best) continue
@@ -41,15 +41,12 @@ fun main() {
 //        -atan2(x.toDouble(), y.toDouble())
 //    }
 
-    val V = vmap.entries.sortedWith(Comparator { (a, _), (b, _) ->
-        val da = a.x < 0
-        val db = b.x < 0
-        if(da != db) da.compareTo(db)
-        else (a.y.toLong() * b.x).compareTo(a.x.toLong() * b.y)
-    })
+    val V = vmap.entries.sortedWith(Comparator { a, b -> compareAngle(a.key, b.key) })
+
+    // test(V)
 
     val seq = sequence {
-        val Vi = ArrayDeque<ListIterator<Pos2>>()
+        val Vi = ArrayDeque<ListIterator<Vec2>>()
         for((_, l) in V) {
             Vi.add(l.listIterator())
         }
@@ -65,4 +62,22 @@ fun main() {
     println("Part 2: $ans2")
 }
 
-fun Pos2.normalize() = gcd(x, y).let { Pos2(x/it, y/it) }
+fun Vec2.normalize() = gcd(x, y).let { Vec2(x/it, y/it) }
+
+fun compareAngle(a: Vec2, b: Vec2): Int {
+    val da = a.x < 0
+    val db = b.x < 0
+    return when {
+        da != db -> da.compareTo(db)
+        a.x == 0 && b.x == 0 -> a.y.compareTo(b.y)
+        else -> (b cross a).sign
+    }
+}
+
+private fun test(V: List<Map.Entry<Vec2, MutableList<Vec2>>>) {
+    for(i in 0 until V.lastIndex) {
+        for(j in i+1..V.lastIndex) {
+            require(compareAngle(V[i].key, V[j].key) == -1)
+        }
+    }
+}

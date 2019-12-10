@@ -18,7 +18,7 @@ fun main() {
 }
 
 fun wire(string: String) = sequence {
-    var pos = Pos2.ORIGIN
+    var pos = Vec2.ORIGIN
     for (ins in string.splitToSequence(",")) {
         val dir = Dir2.fromChar(ins[0])
         val reps = ins.drop(1).toInt()
@@ -29,8 +29,8 @@ fun wire(string: String) = sequence {
     }
 }
 
-fun wireMap(string: String): Map<Pos2, Int> {
-    val res = HashMap<Pos2, Int>()
+fun wireMap(string: String): Map<Vec2, Int> {
+    val res = HashMap<Vec2, Int>()
 
     wire(string).forEachIndexed { index, pos ->
         res.putIfAbsent(pos, index + 1)
