@@ -19,17 +19,19 @@ data class Pos2(val x: Int, val y: Int) {
         Dir2.Up -> Pos2(x, y-1)
     }
 
+    operator fun plus(other: Pos2) = Pos2(x + other.x, y + other.y)
     operator fun minus(other: Pos2) = Pos2(x - other.x, y - other.y)
+    operator fun times(scale: Int) = Pos2(x * scale, y * scale)
 
     override fun hashCode(): Int = x.bitConcat(y).hash().toInt()
 }
 
 enum class Dir2 { Right, Down, Left, Up;
     companion object {
-        val East = Right
-        val South = Down
-        val West = Left
-        val North = Up
+        inline val East get() = Right
+        inline val South get() = Down
+        inline val West get() = Left
+        inline val North get() = Up
 
         fun fromChar(char: Char) = when(char) {
             in "RrEe" -> Right
