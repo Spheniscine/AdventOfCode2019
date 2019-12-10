@@ -9,7 +9,7 @@ fun main() {
     val (A, B) = input.lines().map(::wireMap)
     val I = A.keys intersect B.keys
 
-    val ans1 = I.map { it.manDist(Pos2.ORIGIN) }.min()!!
+    val ans1 = I.map { it.manDist() }.min()!!
 
     println("Part 1: $ans1")
 

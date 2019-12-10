@@ -36,10 +36,17 @@ fun main() {
         l.sortBy { best.manDist(it) }
     }
 
-    val V = vmap.entries.sortedBy {
-        val (x, y) = it.key
-        -atan2(x.toDouble(), y.toDouble())
-    }
+//    val V = vmap.entries.sortedBy {
+//        val (x, y) = it.key
+//        -atan2(x.toDouble(), y.toDouble())
+//    }
+
+    val V = vmap.entries.sortedWith(Comparator { (a, _), (b, _) ->
+        val da = a.x < 0
+        val db = b.x < 0
+        if(da != db) da.compareTo(db)
+        else (a.y.toLong() * b.x).compareTo(a.x.toLong() * b.y)
+    })
 
     val seq = sequence {
         val Vi = ArrayDeque<ListIterator<Pos2>>()

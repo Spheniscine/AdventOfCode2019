@@ -54,9 +54,11 @@ fun <K, V: Any> MutableMap<K, V>.default(defaultValue: V): NonNullMutableMap<K, 
     }
 }
 
-fun <K, V: Any> MutableMap<K, V>.memoize(defaultValue: (K) -> V): NonNullMap<K, V> {
+fun <K, V: Any> MutableMap<K, V>.memoize(defaultValue: (K) -> V): NonNullMap<K, V> = autoPut(defaultValue)
+
+fun <K, V: Any> MutableMap<K, V>.autoPut(defaultValue: (K) -> V): NonNullMutableMap<K, V> {
     val map = this
-    return object : NonNullMap<K, V>, Map<K, V> by map {
+    return object : NonNullMutableMap<K, V>, MutableMap<K, V> by map {
         override fun get(key: K): V = map.getOrPut(key) { defaultValue(key) }
     }
 }

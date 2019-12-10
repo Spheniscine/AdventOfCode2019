@@ -11,6 +11,7 @@ data class Pos2(val x: Int, val y: Int) {
 
     // Manhattan distance
     fun manDist(other: Pos2) = abs(x - other.x) + abs(y - other.y)
+    fun manDist() = abs(x) + abs(y)
 
     operator fun plus(dir: Dir2) = when(dir) {
         Dir2.Right -> Pos2(x+1, y)
