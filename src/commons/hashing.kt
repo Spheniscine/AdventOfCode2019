@@ -73,6 +73,12 @@ class HalfSipHash(val k0: Int = _seed1.toInt(), val k1: Int = _seed1.shr(32).toI
         return h.toLong().shl(32) or (v1 xor v3).toLong().and(0xffff_ffff)
     }
 
+    inline fun doHash(block: HalfSipHash.() -> Unit): Int {
+        init()
+        block()
+        return finish()
+    }
+
     fun hash(input: IntArray): Int {
         init()
         for (m in input) acc(m)
