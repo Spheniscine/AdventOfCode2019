@@ -48,7 +48,7 @@ class Robot(prog: List<Long>) {
     }
 
     fun display() {
-        isWhite.display()
+        isWhite.displayGrid()
     }
 }
 

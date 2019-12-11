@@ -15,15 +15,8 @@ fun main() {
     println("Part 1: $ans1")
 
     println("Part 2:")
-    for (r in 0 until H) {
-        val line = CharArray(W) { c ->
-            val i = r * W + c
-            when(layers.find { it[i] != '2' }?.get(i) ?: '2') {
-                '0' -> '.'
-                '1' -> '#'
-                else -> '?'
-            }
-        }
-        println(String(line))
+    displayGrid(W, H) { x, y ->
+        val i = y * W + x
+        layers.find { it[i] != '2' }?.get(i) == '1'
     }
 }
