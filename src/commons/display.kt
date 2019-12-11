@@ -16,24 +16,40 @@ fun Set<Vec2>.displayGrid() {
     displayGrid(xMin..xMax, yMin..yMax) { x, y -> Vec2(x, y) in this }
 }
 
-inline fun displayLine(len: Int, predicate: (Int) -> Boolean) {
-    val ln = CharArray(len) { if(predicate(it)) '#' else '.' }
+inline fun printLine(len: Int, func: (Int) -> Char) {
+    val ln = CharArray(len) { func(it) }
     println(String(ln))
 }
 
-inline fun displayLine(range: IntRange, predicate: (Int) -> Boolean) {
+inline fun displayLine(len: Int, predicate: (Int) -> Boolean) {
+    printLine(len) { if(predicate(it)) '#' else '.' }
+}
+
+inline fun printLine(range: IntRange, func: (Int) -> Char) {
     val s = range.first
-    displayLine(range.last - s + 1) { x -> predicate(x + s) }
+    printLine(range.last - s + 1) { x -> func(x + s) }
+}
+
+inline fun displayLine(range: IntRange, predicate: (Int) -> Boolean) {
+    printLine(range) { if(predicate(it)) '#' else '.' }
+}
+
+inline fun printGrid(w: Int, h: Int, func: (x: Int, y: Int) -> Char) {
+    for(y in 0 until h) {
+        printLine(w) { x -> func(x, y) }
+    }
 }
 
 inline fun displayGrid(w: Int, h: Int, predicate: (x: Int, y: Int) -> Boolean) {
-    for(y in 0 until h) {
-        displayLine(w) { x -> predicate(x, y) }
+    printGrid(w, h) { x, y -> if(predicate(x, y)) '#' else '.' }
+}
+
+inline fun printGrid(xRange: IntRange, yRange: IntRange, func: (x: Int, y: Int) -> Char) {
+    for(y in yRange) {
+        printLine(xRange) { x -> func(x, y) }
     }
 }
 
 inline fun displayGrid(xRange: IntRange, yRange: IntRange, predicate: (x: Int, y: Int) -> Boolean) {
-    for(y in yRange) {
-        displayLine(xRange) { x -> predicate(x, y) }
-    }
+    printGrid(xRange, yRange) { x, y -> if(predicate(x, y)) '#' else '.' }
 }
