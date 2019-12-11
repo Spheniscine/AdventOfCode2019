@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package commons
 
 import kotlin.math.*
@@ -36,3 +38,7 @@ fun intFromBytes(
 }
 
 tailrec fun gcd(a: Int, b: Int): Int = if(a == 0) abs(b) else gcd(b % a, a)
+
+inline infix fun Int.umod(base: Int) = Math.floorMod(this, base)
+inline infix fun Long.umod(base: Long) = Math.floorMod(this, base)
+inline infix fun Long.umod(base: Int) = Math.floorMod(this, base.toLong()).toInt()

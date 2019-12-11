@@ -65,10 +65,12 @@ fun main() {
 
 fun Vec2.normalize() = gcd(x, y).let { Vec2(x/it, y/it) }
 
+// discrete angle comparator: -1 = "a < b", 0 = "a = b", 1 = "a > b"
 fun compareAngle(a: Vec2, b: Vec2): Int {
-    (a.x < 0).compareTo(b.x < 0).let { if(it != 0) return it }
-    (b cross a).sign.let { if(it != 0) return it }
-    return a.y.sign.compareTo(b.y.sign)
+    // note: behavior undefined if either vector is (0, 0)
+    (a.x < 0).compareTo(b.x < 0).let { if(it != 0) return it } // separate to left and right half, if different halves, right half < left half
+    (b cross a).sign.let { if(it != 0) return it } // use cross product to find direction of smallest angle
+    return a.y.sign.compareTo(b.y.sign) // if cross is 0, angles are either incident, or edge case (0, -a) vs (0, b) where a, b > 0
 }
 
 private fun test(V: List<Map.Entry<Vec2, List<Vec2>>>) {
