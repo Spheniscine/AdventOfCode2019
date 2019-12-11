@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package commons
 
 import kotlin.math.*
@@ -24,6 +26,9 @@ data class Vec2(val x: Int, val y: Int) {
     operator fun minus(other: Vec2) = Vec2(x - other.x, y - other.y)
     operator fun times(scale: Int) = Vec2(x * scale, y * scale)
 
+    fun opposite() = Vec2(-x, -y)
+    inline operator fun unaryMinus() = opposite()
+
     // cross product
     infix fun cross(b: Vec2) = x.toLong() * b.y - y.toLong() * b.x
 
@@ -45,4 +50,28 @@ enum class Dir2 { Right, Down, Left, Up;
             else -> error("Unrecognized direction")
         }
     }
+
+    fun right() = when(this) {
+        Right -> Down
+        Down -> Left
+        Left -> Up
+        Up -> Right
+    }
+    inline operator fun inc() = right()
+
+    fun left() = when(this) {
+        Right -> Up
+        Down -> Right
+        Left -> Down
+        Up -> Left
+    }
+    inline operator fun dec() = left()
+
+    fun opposite() = when(this) {
+        Right -> Left
+        Down -> Up
+        Left -> Right
+        Up -> Down
+    }
+    inline operator fun unaryMinus() = opposite()
 }
