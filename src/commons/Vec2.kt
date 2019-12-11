@@ -42,6 +42,8 @@ enum class Dir2 { Right, Down, Left, Up;
         inline val West get() = Left
         inline val North get() = Up
 
+        val values = values().asList()
+
         fun fromChar(char: Char) = when(char) {
             in "RrEe" -> Right
             in "DdSs" -> Down
@@ -51,27 +53,12 @@ enum class Dir2 { Right, Down, Left, Up;
         }
     }
 
-    fun right() = when(this) {
-        Right -> Down
-        Down -> Left
-        Left -> Up
-        Up -> Right
-    }
+    fun right() = values[(ordinal + 1) % 4]
     inline operator fun inc() = right()
 
-    fun left() = when(this) {
-        Right -> Up
-        Down -> Right
-        Left -> Down
-        Up -> Left
-    }
+    fun left() = values[(ordinal + 3) % 4]
     inline operator fun dec() = left()
 
-    fun opposite() = when(this) {
-        Right -> Left
-        Down -> Up
-        Left -> Right
-        Up -> Down
-    }
+    fun opposite() = values[(ordinal + 2) % 4]
     inline operator fun unaryMinus() = opposite()
 }
