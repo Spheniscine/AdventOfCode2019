@@ -36,14 +36,15 @@ fun main() {
         l.sortBy { best.manDist(it) }
     }
 
-//    val V = vmap.entries.sortedBy {
+//    val V0 = vmap.entries.sortedBy {
 //        val (x, y) = it.key
 //        -atan2(x.toDouble(), y.toDouble())
 //    }
 
     val V = vmap.entries.sortedWith(Comparator { a, b -> compareAngle(a.key, b.key) })
 
-    //test(V)
+//    test(V)
+//    require(V0 == V)
 
     val seq = sequence {
         val Vi = ArrayDeque<ListIterator<Vec2>>()
@@ -65,13 +66,9 @@ fun main() {
 fun Vec2.normalize() = gcd(x, y).let { Vec2(x/it, y/it) }
 
 fun compareAngle(a: Vec2, b: Vec2): Int {
-    val da = a.x < 0
-    val db = b.x < 0
-    return when {
-        da != db -> da.compareTo(db)
-        a.x == 0 && b.x == 0 -> a.y.sign.compareTo(b.y.sign)
-        else -> (b cross a).sign
-    }
+    (a.x < 0).compareTo(b.x < 0).let { if(it != 0) return it }
+    (b cross a).sign.let { if(it != 0) return it }
+    return a.y.sign.compareTo(b.y.sign)
 }
 
 private fun test(V: List<Map.Entry<Vec2, List<Vec2>>>) {
