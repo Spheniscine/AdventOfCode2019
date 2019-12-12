@@ -55,4 +55,4 @@ inline fun displayGrid(xRange: IntRange, yRange: IntRange, predicate: (x: Int, y
 }
 
 const val WHITE_CHAR = '▓'
-const val BLACK_CHAR = ' '
+const val BLACK_CHAR = '·'

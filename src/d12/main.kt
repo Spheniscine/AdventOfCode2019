@@ -23,7 +23,7 @@ fun main() {
     printTime()
 }
 
-val REGEX by lazy { Regex("""<x=(.+), y=(.+), z=(.+)>""")}
+val REGEX by lazy { Regex("""<x=(.+), y=(.+), z=(.+)>""") }
 fun String.parseVec3() = REGEX.capture(this)!!.let { (x, y, z) ->
     Vec3(x.toInt(), y.toInt(), z.toInt())
 }
