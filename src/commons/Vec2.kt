@@ -8,8 +8,8 @@ import kotlin.math.*
 @Suppress("EqualsOrHashCode")
 data class Vec2(val x: Int, val y: Int) {
     companion object {
-        val ORIGIN = Vec2(0, 0)
-        inline val ZERO get() = ORIGIN
+        val ZERO = Vec2(0, 0)
+        inline val ORIGIN get() = ZERO
     }
 
     // Manhattan distance

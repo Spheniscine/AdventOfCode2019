@@ -37,7 +37,10 @@ fun intFromBytes(
             or (b4.toInt() and 0xFF))
 }
 
+inline fun <T> Iterable<T>.sumByLong(func: (T) -> Long) = fold(0L) { acc, t -> acc + func(t) }
+
 tailrec fun gcd(a: Int, b: Int): Int = if(a == 0) abs(b) else gcd(b % a, a)
+tailrec fun gcd(a: Long, b: Long): Long = if(a == 0L) abs(b) else gcd(b % a, a)
 
 inline infix fun Int.umod(base: Int) = Math.floorMod(this, base)
 inline infix fun Long.umod(base: Long) = Math.floorMod(this, base)
