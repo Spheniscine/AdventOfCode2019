@@ -8,6 +8,7 @@ import kotlin.math.*
 private val input by lazy { File("src/d10/input/gmail.in").readText() }
 
 fun main() {
+    markTime()
     val A = mutableListOf<Vec2>()
     input.lineSequence().forEachIndexed { y, ln ->
         ln.forEachIndexed { x, c ->
@@ -24,7 +25,9 @@ fun main() {
     }.maxBy { it.second }!!
 
     println("Part 1: $ans1")
+    printTime()
 
+    markTime()
     val vmap = HashMap<Vec2, MutableList<Vec2>>().memoize { mutableListOf() }
 
     for(a in A) {
@@ -57,10 +60,11 @@ fun main() {
             yield(li.next())
             if(li.hasNext()) Vi.add(li)
         }
-    }
+    }.toList()
 
-    val ans2 = seq.elementAt(199).let { (x, y) -> x * 100 + y }
+    val ans2 = seq[199].let { (x, y) -> x * 100 + y }
     println("Part 2: $ans2")
+    printTime()
 }
 
 fun Vec2.normalize() = gcd(x, y).let { Vec2(x/it, y/it) }
