@@ -22,7 +22,7 @@ inline fun printLine(len: Int, func: (Int) -> Char) {
 }
 
 inline fun displayLine(len: Int, predicate: (Int) -> Boolean) {
-    printLine(len) { if(predicate(it)) '#' else '.' }
+    printLine(len) { if(predicate(it)) WHITE_CHAR else BLACK_CHAR }
 }
 
 inline fun printLine(range: IntRange, func: (Int) -> Char) {
@@ -31,7 +31,7 @@ inline fun printLine(range: IntRange, func: (Int) -> Char) {
 }
 
 inline fun displayLine(range: IntRange, predicate: (Int) -> Boolean) {
-    printLine(range) { if(predicate(it)) '#' else '.' }
+    printLine(range) { if(predicate(it)) WHITE_CHAR else BLACK_CHAR }
 }
 
 inline fun printGrid(w: Int, h: Int, func: (x: Int, y: Int) -> Char) {
@@ -41,7 +41,7 @@ inline fun printGrid(w: Int, h: Int, func: (x: Int, y: Int) -> Char) {
 }
 
 inline fun displayGrid(w: Int, h: Int, predicate: (x: Int, y: Int) -> Boolean) {
-    printGrid(w, h) { x, y -> if(predicate(x, y)) '#' else '.' }
+    printGrid(w, h) { x, y -> if(predicate(x, y)) WHITE_CHAR else BLACK_CHAR }
 }
 
 inline fun printGrid(xRange: IntRange, yRange: IntRange, func: (x: Int, y: Int) -> Char) {
@@ -51,5 +51,8 @@ inline fun printGrid(xRange: IntRange, yRange: IntRange, func: (x: Int, y: Int) 
 }
 
 inline fun displayGrid(xRange: IntRange, yRange: IntRange, predicate: (x: Int, y: Int) -> Boolean) {
-    printGrid(xRange, yRange) { x, y -> if(predicate(x, y)) '#' else '.' }
+    printGrid(xRange, yRange) { x, y -> if(predicate(x, y)) WHITE_CHAR else BLACK_CHAR }
 }
+
+const val WHITE_CHAR = '▓'
+const val BLACK_CHAR = ' '
