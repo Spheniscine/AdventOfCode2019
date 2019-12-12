@@ -11,6 +11,7 @@ data class Vec3(val x: Int, val y: Int, val z: Int) {
         inline val ORIGIN get() = ZERO
     }
 
+    // Manhattan distance
     fun manDist(b: Vec3) = abs(x - b.x) + abs(y - b.y) + abs(z - b.z)
     fun manDist() = abs(x) + abs(y) + abs(z)
 

@@ -6,6 +6,7 @@ import java.io.File
 private val input by lazy { File("src/d4/input/gmail.in").readText() }
 
 fun main() {
+    println("--- Day 4: Secure Container ---")
     markTime()
     val range = input.split('-').let { (a, b) -> a.toInt()..b.toInt() }
 

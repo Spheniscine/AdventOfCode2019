@@ -9,6 +9,7 @@ const val W = 25
 const val H = 6
 
 fun main() {
+    println("--- Day 8: Space Image Format ---")
     markTime()
     val layers = input.chunked(W * H)
 

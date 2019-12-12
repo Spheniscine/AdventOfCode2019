@@ -8,6 +8,7 @@ import kotlin.math.*
 private val input by lazy { File("src/d10/input/gmail.in").readText() }
 
 fun main() {
+    println("--- Day 10: Monitoring Station ---")
     markTime()
     val A = mutableListOf<Vec2>()
     input.lineSequence().forEachIndexed { y, ln ->

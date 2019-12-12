@@ -6,6 +6,7 @@ import java.io.File
 private val input by lazy { File("src/d12/input/gmail.in").readText() }
 
 fun main() {
+    println("--- Day 12: The N-Body Problem ---")
     markTime()
     val vecs = input.lines().map { it.parseVec3() }
 

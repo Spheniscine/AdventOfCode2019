@@ -6,6 +6,7 @@ import java.io.File
 private val input by lazy { File("src/d6/input/gmail.in").readText() }
 
 fun main() {
+    println("--- Day 6: Universal Orbit Map ---")
     markTime()
     val bodies = StringHashMap<Body>().memoize { Body(it) }
     for(ln in input.lineSequence()) {

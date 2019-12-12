@@ -6,6 +6,7 @@ import java.io.File
 private val input by lazy { File("src/d1/input/gmail.in").readText() }
 
 fun main() {
+    println("--- Day 1: The Tyranny of the Rocket Equation ---")
     markTime()
     val A = input.lines().map { it.toInt() }
     val ans1 = A.sumBy { it / 3 - 2 }

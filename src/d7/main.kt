@@ -6,6 +6,7 @@ import java.io.File
 private val input by lazy { File("src/d7/input/gmail.in").readText() }
 
 fun main() {
+    println("--- Day 7: Amplification Circuit ---")
     markTime()
     val prog = input.split(',').map { it.toLong() }
 

@@ -6,6 +6,7 @@ import java.io.File
 private val input by lazy { File("src/d3/input/gmail.in").readText() }
 
 fun main() {
+    println("--- Day 3: Crossed Wires ---")
     markTime()
     val (A, B) = input.lines().map(::wireMap)
     val I = A.keys intersect B.keys

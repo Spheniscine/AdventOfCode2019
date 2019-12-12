@@ -6,6 +6,7 @@ import java.io.File
 private val input by lazy { File("src/d5/input/gmail.in").readText() }
 
 fun main() {
+    println("--- Day 5: Sunny with a Chance of Asteroids ---")
     markTime()
     val prog = input.split(',').map { it.toLong() }
 

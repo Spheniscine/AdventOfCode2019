@@ -7,6 +7,7 @@ import kotlin.system.measureNanoTime
 private val input by lazy { File("src/d9/input/gmail.in").readText() }
 
 fun main() {
+    println("--- Day 9: Sensor Boost ---")
     markTime()
     val prog = input.split(',').map { it.toLong() }
 

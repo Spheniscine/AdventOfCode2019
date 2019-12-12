@@ -6,6 +6,7 @@ import java.io.File
 private val input by lazy { File("src/d2/input/gmail.in").readText() }
 
 fun main() {
+    println("--- Day 2: 1202 Program Alarm ---")
 //    input.split(",").chunked(4).forEachIndexed {index, list ->
 //        println("${index * 4} $list")
 //    }
