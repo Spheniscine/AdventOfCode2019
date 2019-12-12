@@ -6,15 +6,19 @@ import java.io.File
 private val input by lazy { File("src/d3/input/gmail.in").readText() }
 
 fun main() {
+    markTime()
     val (A, B) = input.lines().map(::wireMap)
     val I = A.keys intersect B.keys
 
     val ans1 = I.map { it.manDist() }.min()!!
 
     println("Part 1: $ans1")
+    printTime()
 
+    markTime()
     val ans2 = I.map { A.getValue(it) + B.getValue(it) }.min()!!
     println("Part 2: $ans2")
+    printTime()
 }
 
 fun wire(string: String) = sequence {

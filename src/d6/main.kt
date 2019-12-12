@@ -6,6 +6,7 @@ import java.io.File
 private val input by lazy { File("src/d6/input/gmail.in").readText() }
 
 fun main() {
+    markTime()
     val bodies = StringHashMap<Body>().memoize { Body(it) }
     for(ln in input.lineSequence()) {
         val (parent, child) = ln.split(')').map { bodies[it] }
@@ -25,7 +26,9 @@ fun main() {
         ans
     }
     println("Part 1: $ans1")
+    printTime()
 
+    markTime()
     val you = bodies["YOU"]
     val san = bodies["SAN"]
 
@@ -38,6 +41,7 @@ fun main() {
     val ans2 = san.ancestors().withIndex().first { youAnc.containsKey(it.value) }
         .let { it.index + youAnc.getValue(it.value) }
     println("Part 2: $ans2")
+    printTime()
 }
 
 class Body(val name: String) {

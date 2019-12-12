@@ -6,6 +6,7 @@ import java.io.File
 private val input by lazy { File("src/d11/input/gmail.in").readText() }
 
 fun main() {
+    markTime()
     val prog = input.split(',').map { it.toLong() }
 
     val robot1 = Robot(prog)
@@ -13,14 +14,17 @@ fun main() {
 
     val ans1 = robot1.allPainted.size
     println("Part 1: $ans1")
+    printTime()
     // robot1.display()
 
+    markTime()
     val robot2 = Robot(prog)
     robot2.paint(true)
     robot2.deploy()
 
     println("Part 2:")
     robot2.display()
+    printTime()
 }
 
 class Robot(prog: List<Long>) {

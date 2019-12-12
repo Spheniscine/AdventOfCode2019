@@ -9,6 +9,7 @@ import kotlin.math.*
 data class Vec2(val x: Int, val y: Int) {
     companion object {
         val ORIGIN = Vec2(0, 0)
+        inline val ZERO get() = ORIGIN
     }
 
     // Manhattan distance

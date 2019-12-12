@@ -6,6 +6,7 @@ import java.io.File
 private val input by lazy { File("src/d7/input/gmail.in").readText() }
 
 fun main() {
+    markTime()
     val prog = input.split(',').map { it.toLong() }
 
     fun IntRange.solve() = permutations().map { P ->
@@ -27,9 +28,12 @@ fun main() {
 
     val ans1 = (0..4).solve()
     println("Part 1: $ans1")
+    printTime()
 
+    markTime()
     val ans2 = (5..9).solve()
     println("Part 2: $ans2")
+    printTime()
 }
 
 typealias IntCodeVM = d5.IntCodeVM
