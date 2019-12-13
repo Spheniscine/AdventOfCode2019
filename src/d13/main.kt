@@ -25,7 +25,7 @@ fun main() {
     println("Part 2: $ans2")
     printTime()
 
-    //playManual(prog)
+    // playManual(prog)
 }
 
 fun playManual(prog: List<Long>) {
@@ -57,8 +57,7 @@ class Game(prog: List<Long>) {
         for((x, y, id) in vm.output.chunked(3)) {
             if(x == -1L && y == 0L) score = id
             else {
-                val pos = Vec2(x.toInt(), y.toInt())
-                grid[pos] = Tile.values[id.toInt()]
+                grid[x.toInt(), y.toInt()] = Tile.values[id.toInt()]
             }
         }
         vm.output.clear()
@@ -122,7 +121,7 @@ class Game(prog: List<Long>) {
         val yMax = grid.keys.maxBy { it.y }!!.y
 
         printGrid(xMin..xMax, yMin..yMax) { x, y ->
-            when(grid[Vec2(x, y)]) {
+            when(grid[x, y]) {
                 Tile.Empty -> ' '
                 Tile.Wall -> '▓'
                 Tile.Block -> 'O'

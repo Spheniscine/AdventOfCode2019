@@ -63,3 +63,7 @@ enum class Dir2 { Right, Down, Left, Up;
     fun opposite() = values[(ordinal + 2) % 4]
     inline operator fun unaryMinus() = opposite()
 }
+
+operator fun <V> Map<Vec2, V>.get(x: Int, y: Int) = get(Vec2(x, y))
+operator fun <V> MutableMap<Vec2, V>.set(x: Int, y: Int, v: V) = set(Vec2(x, y), v)
+operator fun <V: Any> NonNullMap<Vec2, V>.get(x: Int, y: Int) = get(Vec2(x, y))
