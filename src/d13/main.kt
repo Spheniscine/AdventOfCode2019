@@ -20,14 +20,24 @@ fun main() {
 
     markTime()
     val game = Game(prog)
-//     game.startManual()
     game.startAuto()
     val ans2 = game.score
     println("Part 2: $ans2")
     printTime()
+
+    //playManual(prog)
+}
+
+fun playManual(prog: List<Long>) {
+    val game = Game(prog)
+    game.startManual()
 }
 
 class Game(prog: List<Long>) {
+    companion object {
+        const val CONTROLS = "oeu"
+    }
+
     val vm = IntCodeVM(prog)
 
     enum class Tile {
@@ -40,11 +50,10 @@ class Game(prog: List<Long>) {
     val grid = HashMap<Vec2, Tile>()
     var score = 0L
 
-    var ballPos = Vec2.ORIGIN
-    var paddlePos = Vec2.ORIGIN
+    var ballPos = 0
+    var paddlePos = 0
 
     fun readGrid() {
-        grid.clear()
         for((x, y, id) in vm.output.chunked(3)) {
             if(x == -1L && y == 0L) score = id
             else {
@@ -72,7 +81,7 @@ class Game(prog: List<Long>) {
                     val ln = readLine()!!
                     if(ln.isBlank()) continue
                     val c = ln[0]
-                    val i = controls.indexOf(c) - 1
+                    val i = CONTROLS.indexOf(c) - 1
                     if(i < -1) continue
                     vm.input(i)
                     break
@@ -85,8 +94,8 @@ class Game(prog: List<Long>) {
         for((x, y, id) in vm.output.chunked(3)) {
             if(x == -1L && y == 0L) score = id
             else when(id.toInt()) {
-                Tile.Ball.ordinal -> ballPos = Vec2(x.toInt(), y.toInt())
-                Tile.Paddle.ordinal -> paddlePos = Vec2(x.toInt(), y.toInt())
+                Tile.Ball.ordinal -> ballPos = x.toInt()
+                Tile.Paddle.ordinal -> paddlePos = x.toInt()
             }
         }
         vm.output.clear()
@@ -98,7 +107,7 @@ class Game(prog: List<Long>) {
             vm.execute()
             readGridAuto()
             if(vm.isWaiting) {
-                val i = ballPos.x.compareTo(paddlePos.x)
+                val i = ballPos.compareTo(paddlePos)
                 vm.input(i)
             } else break
         }
@@ -125,5 +134,3 @@ class Game(prog: List<Long>) {
         println("Score: $score")
     }
 }
-
-const val controls = "oeu"
