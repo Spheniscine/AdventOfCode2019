@@ -47,7 +47,7 @@ class Game(prog: List<Long>) {
         }
     }
 
-    val grid = HashMap<Vec2, Tile>()
+    val grid = HashMap<Vec2, Tile>().default(Tile.Empty)
     var score = 0L
 
     var ballPos = 0
