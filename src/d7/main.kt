@@ -1,6 +1,7 @@
 package d7
 
 import commons.*
+import d5.IntCodeVM_d5
 import java.io.File
 
 private val input by lazy { File("src/d7/input/gmail.in").readText() }
@@ -12,7 +13,7 @@ fun main() {
 
     fun IntRange.solve() = permutations().map { P ->
         val amps = P.map { p ->
-            IntCodeVM(prog).also { it.input(p) }
+            IntCodeVM_d5(prog).also { it.input(p) }
         }
 
         var sig = 0L
@@ -36,5 +37,3 @@ fun main() {
     println("Part 2: $ans2")
     printTime()
 }
-
-typealias IntCodeVM = d5.IntCodeVM

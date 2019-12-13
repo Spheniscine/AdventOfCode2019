@@ -2,10 +2,10 @@ package d5
 
 import commons.coerceToInt
 import commons.toLong
-import d5.IntCodeVM.Status.*
+import d5.IntCodeVM_d5.Status.*
 import java.util.ArrayDeque
 
-class IntCodeVM(program: List<Long>) {
+class IntCodeVM_d5(program: List<Long>) {
 
     companion object {
         const val MODE_POSITION = 0

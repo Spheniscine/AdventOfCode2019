@@ -10,7 +10,7 @@ fun main() {
     markTime()
     val prog = input.split(',').map { it.toLong() }
 
-    val vm1 = IntCodeVM(prog)
+    val vm1 = IntCodeVM_d5(prog)
     vm1.input(1)
     vm1.execute()
     val ans1 = vm1.output.last()
@@ -18,7 +18,7 @@ fun main() {
     printTime()
 
     markTime()
-    val vm2 = IntCodeVM(prog)
+    val vm2 = IntCodeVM_d5(prog)
     vm2.input(5)
     vm2.execute()
     val ans2 = vm2.output.single()

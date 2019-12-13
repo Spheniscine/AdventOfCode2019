@@ -2,7 +2,7 @@ package d2
 
 import commons.coerceToInt
 
-class IntCodeVM(program: List<Long>) {
+class IntCodeVM_d2(program: List<Long>) {
     val mem = program.toLongArray()
 
     enum class Status { Continue, Halt, Error }

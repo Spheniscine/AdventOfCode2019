@@ -13,7 +13,7 @@ fun main() {
     markTime()
     val inp = input.split(',').map { it.toLong() }
 
-    var vm = IntCodeVM(inp)
+    var vm = IntCodeVM_d2(inp)
     vm.mem[1] = 12
     vm.mem[2] = 2
     vm.execute()
@@ -25,7 +25,7 @@ fun main() {
     val ans2 = run {
         for(i in 0..99) {
             for(j in 0..99) {
-                vm = IntCodeVM(inp)
+                vm = IntCodeVM_d2(inp)
                 vm.mem[1] = i.toLong()
                 vm.mem[2] = j.toLong()
                 vm.execute()

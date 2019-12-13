@@ -1,6 +1,7 @@
 package d11
 
 import commons.*
+import d9.IntCodeVM
 import java.io.File
 
 private val input by lazy { File("src/d11/input/gmail.in").readText() }
@@ -57,5 +58,4 @@ class Robot(prog: List<Long>) {
     }
 }
 
-typealias IntCodeVM = d9.IntCodeVM
 fun IntCodeVM.input(boolean: Boolean) = input(boolean.toLong())
