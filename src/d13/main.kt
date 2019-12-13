@@ -128,7 +128,6 @@ class Game(prog: List<Long>) {
                 Tile.Block -> 'O'
                 Tile.Paddle -> '—'
                 Tile.Ball -> '•'
-                null -> ' '
             }
         }
         println("Score: $score")
