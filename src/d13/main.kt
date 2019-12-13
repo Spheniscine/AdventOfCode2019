@@ -49,15 +49,10 @@ class Game(prog: List<Long>) {
             if(x == -1L && y == 0L) score = id
             else {
                 val pos = Vec2(x.toInt(), y.toInt())
-                grid[pos] = Tile.values[id.toInt()].also {
-                    when(it) {
-                        Tile.Ball -> ballPos = pos
-                        Tile.Paddle -> paddlePos = pos
-                        else -> {}
-                    }
-                }
+                grid[pos] = Tile.values[id.toInt()]
             }
         }
+        vm.output.clear()
     }
 
     fun start1() {
@@ -86,11 +81,22 @@ class Game(prog: List<Long>) {
         }
     }
 
+    fun readGridAuto() {
+        for((x, y, id) in vm.output.chunked(3)) {
+            if(x == -1L && y == 0L) score = id
+            else when(id.toInt()) {
+                Tile.Ball.ordinal -> ballPos = Vec2(x.toInt(), y.toInt())
+                Tile.Paddle.ordinal -> paddlePos = Vec2(x.toInt(), y.toInt())
+            }
+        }
+        vm.output.clear()
+    }
+
     fun startAuto() {
         vm.mem[0] = 2
         while(true) {
             vm.execute()
-            readGrid()
+            readGridAuto()
             if(vm.isWaiting) {
                 val i = ballPos.x.compareTo(paddlePos.x)
                 vm.input(i)
