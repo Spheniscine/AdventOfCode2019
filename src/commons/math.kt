@@ -45,3 +45,8 @@ tailrec fun gcd(a: Long, b: Long): Long = if(a == 0L) abs(b) else gcd(b % a, a)
 inline infix fun Int.umod(base: Int) = Math.floorMod(this, base)
 inline infix fun Long.umod(base: Long) = Math.floorMod(this, base)
 inline infix fun Long.umod(base: Int) = Math.floorMod(this, base.toLong()).toInt()
+
+inline infix fun Int.divCeil(other: Int) = -(-this divFloor other)
+inline infix fun Int.divFloor(other: Int) = Math.floorDiv(this, other)
+inline infix fun Long.divCeil(other: Long) = -(-this divFloor other)
+inline infix fun Long.divFloor(other: Long) = Math.floorDiv(this, other)

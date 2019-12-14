@@ -50,7 +50,7 @@ enum class Dir2 { Right, Down, Left, Up;
             in "DdSs" -> Down
             in "LlWw" -> Left
             in "UuNn" -> Up
-            else -> error("Unrecognized direction")
+            else -> error("Unrecognized direction: $char")
         }
     }
 
