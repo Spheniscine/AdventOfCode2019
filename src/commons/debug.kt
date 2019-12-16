@@ -6,6 +6,6 @@ fun markTime() {
 }
 
 fun printTime() {
-    val ms = (System.nanoTime() - markedNanoTime) / 1000000
+    val ms = (System.nanoTime() - markedNanoTime) divCeil 1000000
     println("Time: ${ms}ms")
 }

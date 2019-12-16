@@ -1,19 +1,7 @@
 package commons
 
-/**
- * Displays a set of points as an ASCII image; '#' represents a point in the set, and '.' represents a point not in the set.
- * The bounds of the image are calculated automatically.
- *
- * Avoid using on sets with a high range of values.
- */
 fun Set<Vec2>.displayGrid() {
-    if(isEmpty()) return
-    val xMin = minBy { it.x }!!.x
-    val xMax = maxBy { it.x }!!.x
-    val yMin = minBy { it.y }!!.y
-    val yMax = maxBy { it.y }!!.y
-
-    displayGrid(xMin..xMax, yMin..yMax) { x, y -> Vec2(x, y) in this }
+    displayGrid(bounds()) { x, y -> Vec2(x, y) in this }
 }
 
 inline fun printLine(len: Int, func: (Int) -> Char) {
@@ -50,9 +38,13 @@ inline fun printGrid(xRange: IntRange, yRange: IntRange, func: (x: Int, y: Int) 
     }
 }
 
+inline fun printGrid(rect: Rect, func: (x: Int, y: Int) -> Char) = printGrid(rect.xRange, rect.yRange, func)
+
 inline fun displayGrid(xRange: IntRange, yRange: IntRange, predicate: (x: Int, y: Int) -> Boolean) {
     printGrid(xRange, yRange) { x, y -> if(predicate(x, y)) WHITE_CHAR else BLACK_CHAR }
 }
+
+inline fun displayGrid(rect: Rect, predicate: (x: Int, y: Int) -> Boolean) = displayGrid(rect.xRange, rect.yRange, predicate)
 
 const val WHITE_CHAR = '▓'
 const val BLACK_CHAR = '·'

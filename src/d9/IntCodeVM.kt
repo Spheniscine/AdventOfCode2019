@@ -138,4 +138,16 @@ class IntCodeVM(program: List<Long>) {
     fun execute() {
         while(step() == OK) {}
     }
+
+    fun clone(): IntCodeVM {
+        val new = IntCodeVM(emptyList())
+        new.mem.putAll(mem)
+        new.status = status
+        new.ip = ip
+        new.rb = rb
+        new.inputQueue.addAll(inputQueue)
+        new.output.addAll(output)
+
+        return new
+    }
 }

@@ -114,13 +114,7 @@ class Game(prog: List<Long>) {
     }
 
     fun display() {
-        if(grid.isEmpty()) return
-        val xMin = grid.keys.minBy { it.x }!!.x
-        val xMax = grid.keys.maxBy { it.x }!!.x
-        val yMin = grid.keys.minBy { it.y }!!.y
-        val yMax = grid.keys.maxBy { it.y }!!.y
-
-        printGrid(xMin..xMax, yMin..yMax) { x, y ->
+        printGrid(grid.keys.bounds()) { x, y ->
             when(grid[x, y]) {
                 Tile.Empty -> ' '
                 Tile.Wall -> '▓'
