@@ -16,7 +16,8 @@ fun main() {
     vm.mem[0] = 2
     vm.execute()
 
-    val map = vm.output.let { o -> String(CharArray(o.size) { o[it].toChar() }) }.lines().filter { it.isNotEmpty() }
+    val map = vm.output.let { o -> String(CharArray(o.size) { o[it].toChar() }) }
+        .lineSequence().filter { it.isNotEmpty() }.toList()
 
     fun ok(pos: Vec2) = pos.y in map.indices && pos.x in map[pos.y].indices && map[pos.y][pos.x] != '.'
 
