@@ -46,10 +46,10 @@ enum class Dir2 { Right, Down, Left, Up;
         val values = values().asList()
 
         fun fromChar(char: Char) = when(char) {
-            in "RrEe" -> Right
-            in "DdSs" -> Down
-            in "LlWw" -> Left
-            in "UuNn" -> Up
+            in "RrEe>" -> Right
+            in "DdSsv" -> Down
+            in "LlWw<" -> Left
+            in "UuNn^" -> Up
             else -> error("Unrecognized direction: $char")
         }
     }

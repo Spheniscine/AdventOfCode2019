@@ -1,6 +1,6 @@
 package commons
 
-data class Rect(val xRange: IntRange, val yRange: IntRange) {
+data class Rect(val xRange: IntRange, val yRange: IntRange): Iterable<Vec2> {
     companion object {
         val EMPTY = Rect(IntRange.EMPTY, IntRange.EMPTY)
     }
@@ -21,6 +21,16 @@ data class Rect(val xRange: IntRange, val yRange: IntRange) {
             acc(yRange.last)
         }
     }
+
+    fun sequence() = sequence {
+        for(y in yRange) {
+            for(x in xRange) {
+                yield(Vec2(x, y))
+            }
+        }
+    }
+
+    override fun iterator() = sequence().iterator()
 }
 
 fun Collection<Vec2>.bounds(): Rect {
