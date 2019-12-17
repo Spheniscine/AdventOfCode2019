@@ -31,7 +31,7 @@ fun main() {
     }
     //for(row in pattern.rows) { println(row.contentToString()) }
 
-    val ans1 = res1.take(8).joinToString("")
+    val ans1 = String(CharArray(8) { '0' + res1[it] })
     println("Part 1: $ans1")
     printTime()
 
