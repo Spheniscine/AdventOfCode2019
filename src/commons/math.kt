@@ -50,3 +50,9 @@ inline infix fun Int.divCeil(other: Int) = -(-this divFloor other)
 inline infix fun Int.divFloor(other: Int) = Math.floorDiv(this, other)
 inline infix fun Long.divCeil(other: Long) = -(-this divFloor other)
 inline infix fun Long.divFloor(other: Long) = Math.floorDiv(this, other)
+
+inline fun <T> T.iterate(times: Int, func: (T) -> T): T {
+    var res = this
+    repeat(times) { res = func(res) }
+    return res
+}
