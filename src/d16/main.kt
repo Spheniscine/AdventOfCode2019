@@ -11,7 +11,7 @@ fun main() {
 
     markTime()
     val n = input.length
-    val signal = FFTMatrix(1, n) { _, j -> input[j] - '0' }
+    val signal = IntArray(n) { j -> input[j] - '0' }
 
     val pattern = List(n) { IntArray(n) }.apply {
         for(j in 0 until n) {
@@ -20,9 +20,15 @@ fun main() {
                 this[i][j] = seq.next()
             }
         }
-    }.let { FFTMatrix(it) }
+    }
 
-    val res1 = signal.iterate(100) { (it * pattern).abs() }.rows[0]
+    val res1 = signal.iterate(100) {
+        IntArray(it.size) { j ->
+            abs(it.indices.sumBy { k ->
+                it[k] * pattern[k][j]
+            } % 10)
+        }
+    }
     //for(row in pattern.rows) { println(row.contentToString()) }
 
     val ans1 = res1.take(8).joinToString("")
@@ -30,11 +36,11 @@ fun main() {
     printTime()
 
     markTime()
-    // latter half of transformation matrix is a suffix sum
-    val offset = (0 until 7).fold(0) { acc, i -> acc * 10 + signal[0,i] }
+    // latter half of transformation is a suffix sum
+    val offset = (0 until 7).fold(0) { acc, i -> acc * 10 + signal[i] }
     require(offset >= n * 5000) { "Simplification failed" }
     val m = n * 10000 - offset
-    val signal2 = IntArray(m) { signal[0, (it + offset) % n]}
+    val signal2 = IntArray(m) { signal[(it + offset) % n] }
 
     val res2 = signal2.iterate(100) {
         val new = IntArray(it.size)
@@ -58,31 +64,3 @@ fun patternSequence(j: Int) = sequence {
         repeat(j+1) { yield(-1) }
     }
 }.drop(1)
-
-inline class FFTMatrix(val rows: List<IntArray>) {
-    val height get() = rows.size
-    val width get() = rows[0].size
-
-    operator fun get(r: Int, c: Int) = rows[r][c]
-
-    operator fun times(that: FFTMatrix): FFTMatrix {
-        if(width != that.height) throw ArithmeticException("Second matrix's height must equal first matrix's width")
-
-        return FFTMatrix(height, that.width) { r, c ->
-            (0 until width).sumBy { k ->
-                this[r, k] * that[k, c]
-            } % 10
-        }
-    }
-
-    fun abs() = FFTMatrix(height, width) { i, j ->
-        abs(this[i, j])
-    }
-}
-
-inline fun FFTMatrix(height: Int, width: Int, generator: (r: Int, c: Int) -> Int) =
-    FFTMatrix(
-        List(height) { r ->
-            IntArray(width) { c -> generator(r, c) }
-        }
-    )
