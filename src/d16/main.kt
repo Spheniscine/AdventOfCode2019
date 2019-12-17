@@ -39,8 +39,7 @@ fun main() {
     // latter half of transformation is a suffix sum
     val offset = (0 until 7).fold(0) { acc, i -> acc * 10 + signal[i] }
     require(offset >= n * 5000) { "Simplification failed" }
-    val m = n * 10000 - offset
-    val signal2 = IntArray(m) { signal[(it + offset) % n] }
+    val signal2 = IntArray(n * 10000 - offset) { signal[(it + offset) % n] }
 
     val res2 = signal2.iterate(100) {
         val new = IntArray(it.size)
