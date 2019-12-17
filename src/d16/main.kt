@@ -38,7 +38,7 @@ fun main() {
     markTime()
     // latter half of transformation is a suffix sum
     val offset = (0 until 7).fold(0) { acc, i -> acc * 10 + signal[i] }
-    require(offset >= n * 5000) { "Simplification failed" }
+    require(offset >= n * 5000) { "Part 2 heuristic failed." }
     val signal2 = IntArray(n * 10000 - offset) { signal[(it + offset) % n] }
 
     val res2 = signal2.iterate(100) {
