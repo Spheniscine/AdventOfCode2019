@@ -55,9 +55,9 @@ fun main() {
 
     fun compress(strat: String, label: Char = 'A'): CompressResult? {
         val l = strat.indices.find { strat[it] !in "ABC" }
-            ?: return if(label == 'D' && strat.length <= 10)
-                CompressResult(strat.asIterable().joinToString(","), emptyList())
-                else compress(strat, label + 1)?.let{ CompressResult(it.main, listOf("") + it.macros) }
+            ?: return if(label == 'D') {
+                if(strat.length <= 10) CompressResult(strat.asIterable().joinToString(","), emptyList()) else null
+            } else compress(strat, label + 1)?.let{ CompressResult(it.main, listOf("") + it.macros) }
 
         if(label == 'D') return null
 
