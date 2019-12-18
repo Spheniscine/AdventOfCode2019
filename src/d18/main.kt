@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package d18
 
 import commons.*
@@ -59,12 +61,13 @@ fun main() {
         val distMap = distMap()
 
         val closed = HashSet<ClosedEntry>()
-        val open = PriorityQueue(11, compareBy<OpenEntry> { it.cost })
+        val open = PriorityQueue<OpenEntry>()
         open.add(OpenEntry((0 until numBots).joinToString(""), 0, 0))
 
         while(true) {
             val (state, mask, cost) = open.poll() ?: break
-            if(mask == allMask) return cost
+            if(mask == allMask)
+                return cost
             if(closed.add(ClosedEntry(state, mask)).not()) continue
             for(bot in 0 until numBots) {
                 for((dest, distResult) in distMap[state[bot]]!!) {
@@ -76,8 +79,7 @@ fun main() {
                     }
                     val nmask = mask.setBit(dest - 'a')
                     if(ClosedEntry(nstate, nmask) in closed) continue
-                    val ncost = cost + dist
-                    open.add(OpenEntry(nstate, nmask, ncost))
+                    open.add(OpenEntry(nstate, nmask, cost + dist))
                 }
             }
         }
@@ -107,12 +109,18 @@ fun main() {
 
 operator fun List<CharArray>.get(pos: Vec2) = this[pos.y][pos.x]
 operator fun List<CharArray>.set(pos: Vec2, v: Char) { this[pos.y][pos.x] = v }
-fun Int.getBit(i: Int) = shr(i) and 1 == 1
-fun Int.setBit(i: Int) = or(1 shl i)
+inline fun Int.getBit(i: Int) = shr(i) and 1 == 1
+inline fun Int.setBit(i: Int) = or(1 shl i)
+inline val Int.bitCount get() = Integer.bitCount(this)
 
 data class BFSEntry(val pos: Vec2, val mask: Int, val cost: Int)
 data class DistResult(val mask: Int, val cost: Int)
-data class OpenEntry(val state: String, val mask: Int, val cost: Int)
+data class OpenEntry(val state: String, val mask: Int, val cost: Int): Comparable<OpenEntry> {
+    override fun compareTo(other: OpenEntry): Int {
+        cost.compareTo(other.cost).let { if(it != 0) return it }
+        return other.mask.bitCount.compareTo(mask.bitCount)
+    }
+}
 data class ClosedEntry(val state: String, val mask: Int) {
     override fun hashCode(): Int = sipHasher.doHash {
         acc(state)
