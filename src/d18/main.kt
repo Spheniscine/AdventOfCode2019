@@ -83,9 +83,9 @@ fun main() {
                     val nmask = mask.setBit(dest - 'a')
                     val ncost = cost + dist
                     val closedEntry = ClosedEntry(nstate, nmask)
-                    if(closed[closedEntry].let { it != null && it <= ncost}) continue
+                    if(closed[closedEntry].let { it != null && it <= ncost }) continue
                     closed[closedEntry] = ncost
-                    open.add(OpenEntry(nstate, nmask, cost + dist))
+                    open.add(OpenEntry(nstate, nmask, ncost))
                 }
             }
         }
