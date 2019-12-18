@@ -53,11 +53,11 @@ fun main() {
         }
     }
 
-    fun sections(strat: String, label: Char = 'A'): SectionsResult? {
+    fun compress(strat: String, label: Char = 'A'): CompressResult? {
         val l = strat.indices.find { strat[it] !in "ABC" }
             ?: return if(label == 'D' && strat.length <= 10)
-                SectionsResult(strat.asIterable().joinToString(","), emptyList())
-                else sections(strat, label + 1)?.let{ SectionsResult(it.main, listOf("") + it.macros) }
+                CompressResult(strat.asIterable().joinToString(","), emptyList())
+                else compress(strat, label + 1)?.let{ CompressResult(it.main, listOf("") + it.macros) }
 
         if(label == 'D') return null
 
@@ -68,14 +68,14 @@ fun main() {
         for(i in r-1 downTo l) {
             val sub = strat.substring(l..i)
             val newStrat = strat.replace(sub, label.toString())
-            val res = sections(newStrat, label + 1) ?: continue
-            return SectionsResult(res.main, listOf(stratToMacro(sub)) + res.macros)
+            val res = compress(newStrat, label + 1) ?: continue
+            return CompressResult(res.main, listOf(stratToMacro(sub)) + res.macros)
         }
 
         return null
     }
 
-    val (main, macros) = sections(strat, 'A') ?: error("Part 2 heuristic failed.")
+    val (main, macros) = compress(strat) ?: error("Part 2 heuristic failed.")
 
     vm.input(main)
     for(macro in macros) vm.input(macro)
@@ -90,7 +90,7 @@ fun main() {
     // println(vm.output.joinToString("") { it.toChar().toString() })
 }
 
-data class SectionsResult(val main: String, val macros: List<String>)
+data class CompressResult(val main: String, val macros: List<String>)
 
 private fun IntCodeVM.input(string: String) {
     for(char in string) input(char.toLong())
