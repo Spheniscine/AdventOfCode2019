@@ -16,7 +16,7 @@ fun main() {
     vm.mem[0] = 2
     vm.execute()
 
-    val map = vm.output.let { o -> String(CharArray(o.size) { o[it].toChar() }) }
+    var map = vm.output.let { o -> String(CharArray(o.size) { o[it].toChar() }) }
         .lineSequence().filter { it.isNotEmpty() }.toList()
 
     fun ok(pos: Vec2) = pos.y in map.indices && pos.x in map[pos.y].indices && map[pos.y][pos.x] != '.'
@@ -28,6 +28,8 @@ fun main() {
     val ans1 = intersections.sumBy { (x, y) -> x * y }
     println("Part 1: $ans1")
     printTime()
+
+    map = File("src/d17/input/test.in").readText().lines()
 
     markTime()
     val strat = buildString {
@@ -55,9 +57,9 @@ fun main() {
 
     fun compress(strat: String, label: Char = 'A'): CompressResult? {
         val l = strat.indices.find { strat[it] !in "ABC" }
-            ?: return if(label == 'D' && strat.length <= 10)
-                CompressResult(strat.asIterable().joinToString(","), emptyList())
-                else compress(strat, label + 1)?.let{ CompressResult(it.main, listOf("") + it.macros) }
+            ?: return if(label == 'D') {
+                if(strat.length <= 10) CompressResult(strat.asIterable().joinToString(","), emptyList()) else null
+            } else compress(strat, label + 1)?.let{ CompressResult(it.main, listOf("") + it.macros) }
 
         if(label == 'D') return null
 
