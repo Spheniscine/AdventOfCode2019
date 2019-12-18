@@ -66,7 +66,7 @@ fun main() {
 
         val closed = HashMap<ClosedEntry, Int>()
         val open = PriorityQueue<OpenEntry>(11, compareBy { it.cost })
-        open.add(OpenEntry((0 until numBots).joinToString(""), 0, 0))
+        open.add(OpenEntry(String(CharArray(numBots) { '0' + it }), 0, 0))
 
         while(true) {
             val (state, mask, cost) = open.poll() ?: break
