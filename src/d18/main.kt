@@ -20,8 +20,7 @@ fun main() {
     val posMap = HashMap<Char, Vec2>()
     for(y in 0 until h) {
         for(x in 0 until w) {
-            val tile = grid[y][x]
-            when(tile) {
+            when(val tile = grid[y][x]) {
                 in 'a'..'z' -> posMap[tile] = Vec2(x, y)
                 '@' -> posMap['0'] = Vec2(x, y)
             }
@@ -41,7 +40,12 @@ fun main() {
             open.add(BFSEntry(init, 0, 0))
 
             while(true) {
-                val (pos, mask, cost) = open.poll() ?: break
+                val (pos, _mask, cost) = open.poll() ?: break
+
+                // Pretend a key is also its own door, blocking other keys behind it.
+                // This significantly prunes the search tree, as it prevents walking past keys without activating them.
+                val mask = grid[pos].let { if(it in 'a'..'z') _mask.setBit(it - 'a') else _mask }
+
                 for(dir in Dir2.values) {
                     val npos = pos + dir
                     val tile = grid[npos]
