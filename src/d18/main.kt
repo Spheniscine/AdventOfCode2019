@@ -60,15 +60,14 @@ fun main() {
     fun solve(numBots: Int): Int {
         val distMap = distMap()
 
-        val closed = HashSet<ClosedEntry>()
+        val closed = HashMap<ClosedEntry, Int>()
         val open = PriorityQueue<OpenEntry>()
         open.add(OpenEntry((0 until numBots).joinToString(""), 0, 0))
 
         while(true) {
             val (state, mask, cost) = open.poll() ?: break
-            if(mask == allMask)
-                return cost
-            if(closed.add(ClosedEntry(state, mask)).not()) continue
+            if(mask == allMask) return cost
+            if(closed[ClosedEntry(state, mask)].let { it != null && it < cost }) continue
             for(bot in 0 until numBots) {
                 for((dest, distResult) in distMap[state[bot]]!!) {
                     val (doorMask, dist) = distResult
@@ -78,7 +77,10 @@ fun main() {
                         set(bot, dest)
                     }
                     val nmask = mask.setBit(dest - 'a')
-                    if(ClosedEntry(nstate, nmask) in closed) continue
+                    val ncost = cost + dist
+                    val closedEntry = ClosedEntry(nstate, nmask)
+                    if(closed[closedEntry].let { it != null && it <= ncost}) continue
+                    closed[closedEntry] = ncost
                     open.add(OpenEntry(nstate, nmask, cost + dist))
                 }
             }
