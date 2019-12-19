@@ -32,14 +32,15 @@ fun main() {
 
     markTime()
     var (x, y) = lastTrue
-    while(grid(x+1, y)) x++
+    while(grid(x + 1, y)) x++
     while(true) {
         if(x >= 99 && grid(x - 99, y + 99)) {
             x -= 99
+            while(grid(x - 1, y + 99)) x--
             break
         }
         y++
-        while(grid(x+1, y)) x++
+        while(grid(x + 1, y)) x++
     }
 
     val ans2 = x * 10000 + y
