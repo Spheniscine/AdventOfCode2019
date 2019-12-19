@@ -46,6 +46,7 @@ fun main() {
                 // This significantly prunes the search tree, as it prevents walking past keys without activating them.
                 val mask = grid[pos].let { if(it in 'a'..'z') _mask.setBit(it - 'a') else _mask }
 
+                @Suppress("EqualsOrHashCode")
                 for(dir in Dir2.values) {
                     val npos = pos + dir
                     val tile = grid[npos]
@@ -121,6 +122,7 @@ inline fun Int.setBit(i: Int) = or(1 shl i)
 data class BFSEntry(val pos: Vec2, val mask: Int, val cost: Int)
 data class DistResult(val mask: Int, val cost: Int)
 data class OpenEntry(val state: String, val mask: Int, val cost: Int)
+@Suppress("EqualsOrHashCode")
 data class ClosedEntry(val state: String, val mask: Int) {
     override fun hashCode(): Int = sipHasher.doHash {
         acc(state)
