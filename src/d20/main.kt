@@ -144,7 +144,7 @@ fun main() {
                 // if the new position is on the outer edge, we just warped inward, otherwise, we warped outward
                 val inward = (dest.x == 2 || dest.x == w-3) || (dest.y == 2 || dest.y == h-3)
                 val nz = if(dest == end) 0 else state.z + (if(inward) 1 else -1)
-                if(nz < 0) continue
+                if(nz < 0) continue // negative z is invalid
 
                 val nstate = dest.z(nz)
                 val ncost = cost + dist
