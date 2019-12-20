@@ -17,9 +17,6 @@ fun main() {
     val h = maze.size
     val w = maze.maxBy { it.length }!!.length
 
-    operator fun List<String>.get(x: Int, y: Int) = if(y in indices && x in this[y].indices) this[y][x] else ' '
-    operator fun List<String>.get(pos: Vec2) = this[pos.x, pos.y]
-
     val portalPreRegex = Regex("""[A-Z]{2}\.""")
     val portalPostRegex = Regex("""\.[A-Z]{2}""")
 
@@ -164,6 +161,9 @@ fun main() {
     println("Part 2: $ans2")
     printTime()
 }
+
+operator fun List<String>.get(x: Int, y: Int) = if(y in indices && x in this[y].indices) this[y][x] else ' '
+operator fun List<String>.get(pos: Vec2) = this[pos.x, pos.y]
 
 data class BFSEntry(val pos: Vec2, val cost: Int)
 data class Dijk<T>(val state: T, val cost: Int)
