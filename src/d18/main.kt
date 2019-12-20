@@ -33,11 +33,11 @@ fun main() {
     fun distMap(): Map<Char, Map<Char, DistResult>> {
         val ans = HashMap<Char, Map<Char, DistResult>>()
 
-        for((key, init) in posMap) {
+        for((src, initPos) in posMap) {
             val map = HashMap<Char, DistResult>()
-            val closed = hashSetOf(init)
+            val closed = hashSetOf(initPos)
             val open = ArrayDeque<BFSEntry>()
-            open.add(BFSEntry(init, 0, 0))
+            open.add(BFSEntry(initPos, 0, 0))
 
             while(true) {
                 val (pos, _mask, cost) = open.poll() ?: break
@@ -46,17 +46,16 @@ fun main() {
                 // This significantly prunes the search tree, as it prevents walking past keys without activating them.
                 val mask = grid[pos].let { if(it in 'a'..'z') _mask.setBit(it - 'a') else _mask }
 
-                @Suppress("EqualsOrHashCode")
                 for(dir in Dir2.values) {
                     val npos = pos + dir
                     val tile = grid[npos]
                     if(tile == '#' || closed.add(npos).not()) continue
                     val nmask = if(tile in 'A'..'Z') mask.setBit(tile - 'A') else mask
-                    if(key != tile && tile in 'a'..'z') map[tile] = DistResult(nmask, cost + 1)
+                    if(src != tile && tile in 'a'..'z') map[tile] = DistResult(nmask, cost + 1)
                     open.add(BFSEntry(npos, nmask, cost + 1))
                 }
             }
-            ans[key] = map
+            ans[src] = map
         }
 
         return ans

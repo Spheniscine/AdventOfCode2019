@@ -17,7 +17,7 @@ fun main() {
         vm.input(x)
         vm.input(y)
         vm.execute()
-        return vm.output.pop() == 1L
+        return vm.output[0] == 1L
     }
 
     fun grid(pos: Vec2) = grid(pos.x, pos.y)

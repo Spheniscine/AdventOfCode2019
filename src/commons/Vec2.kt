@@ -10,6 +10,7 @@ data class Vec2(val x: Int, val y: Int) {
     companion object {
         val ZERO = Vec2(0, 0)
         inline val ORIGIN get() = ZERO
+        val READING_ORDER = Comparator(Vec2::compareReadingOrder)
     }
 
     // Manhattan distance
@@ -34,6 +35,11 @@ data class Vec2(val x: Int, val y: Int) {
     infix fun cross(b: Vec2) = x.toLong() * b.y - y.toLong() * b.x
 
     override fun hashCode(): Int = x.bitConcat(y).hash().toInt()
+
+    fun compareReadingOrder(b: Vec2): Int {
+        y.compareTo(b.y).let { if(it != 0) return it }
+        return x.compareTo(b.x)
+    }
 }
 
 enum class Dir2 { Right, Down, Left, Up;
