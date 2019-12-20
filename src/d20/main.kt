@@ -108,9 +108,7 @@ fun main() {
 
             while(true) {
                 val (pos, cost) = open.poll() ?: break
-
-                // Pretend a key is also its own door, blocking other keys behind it.
-                // This significantly prunes the search tree, as it prevents walking past keys without activating them.
+                
                 for(dir in Dir2.values) {
                     val npos = pos + dir
                     val tile = maze[npos]
