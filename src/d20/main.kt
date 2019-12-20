@@ -118,7 +118,7 @@ fun main() {
             }
             ans[src] = successors
         }
-        ans[end] = emptyList()
+        ans[end] = emptyList() // treat false exits as dead ends
 
         ans
     }
