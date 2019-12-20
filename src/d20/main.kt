@@ -17,8 +17,7 @@ fun main() {
     val h = maze.size
     val w = maze.maxBy { it.length }!!.length
 
-    val portalPreRegex = Regex("""[A-Z]{2}\.""")
-    val portalPostRegex = Regex("""\.[A-Z]{2}""")
+    val portalRegex = Regex("[A-Z]{2}")
 
     val gates = StringHashMap<Vec2>()
     val warps = HashMap<Vec2, Vec2>()
@@ -37,32 +36,24 @@ fun main() {
     for(y in 0 until h) {
         val row = maze[y]
 
-        for(match in portalPreRegex.findAll(row)) {
-            val label = match.value.substring(0, 2)
-            val pos = Vec2(match.range.last, y)
-            connectGate(label, pos)
-        }
-
-        for(match in portalPostRegex.findAll(row)) {
-            val label = match.value.substring(1, 3)
-            val pos = Vec2(match.range.first, y)
-            connectGate(label, pos)
+        for(match in portalRegex.findAll(row)) {
+            if(maze[match.range.last+1, y] == '.') {
+                connectGate(match.value, Vec2(match.range.last+1, y))
+            } else {
+                connectGate(match.value, Vec2(match.range.first-1, y))
+            }
         }
     }
 
     for(x in 0 until w) {
         val col = String(CharArray(h) { maze[x, it] })
 
-        for(match in portalPreRegex.findAll(col)) {
-            val label = match.value.substring(0, 2)
-            val pos = Vec2(x, match.range.last)
-            connectGate(label, pos)
-        }
-
-        for(match in portalPostRegex.findAll(col)) {
-            val label = match.value.substring(1, 3)
-            val pos = Vec2(x, match.range.first)
-            connectGate(label, pos)
+        for(match in portalRegex.findAll(col)) {
+            if(maze[x, match.range.last+1] == '.') {
+                connectGate(match.value, Vec2(x, match.range.last+1))
+            } else {
+                connectGate(match.value, Vec2(x, match.range.first-1))
+            }
         }
     }
 
