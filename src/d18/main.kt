@@ -30,11 +30,11 @@ fun main() {
     val numKeys = posMap.size - 1
     val allMask = (1 shl numKeys) - 1
 
-    fun distMap(): Map<Char, Map<Char, DistResult>> {
-        val ans = HashMap<Char, Map<Char, DistResult>>()
+    fun distMap(): Map<Char, List<SuccEntry>> {
+        val ans = HashMap<Char, List<SuccEntry>>()
 
         for((src, initPos) in posMap) {
-            val map = HashMap<Char, DistResult>()
+            val successors = mutableListOf<SuccEntry>()
             val closed = hashSetOf(initPos)
             val open = ArrayDeque<BFSEntry>()
             open.add(BFSEntry(initPos, 0, 0))
@@ -51,11 +51,11 @@ fun main() {
                     val tile = grid[npos]
                     if(tile == '#' || closed.add(npos).not()) continue
                     val nmask = if(tile in 'A'..'Z') mask.setBit(tile - 'A') else mask
-                    if(src != tile && tile in 'a'..'z') map[tile] = DistResult(nmask, cost + 1)
+                    if(src != tile && tile in 'a'..'z') successors.add(SuccEntry(tile, nmask, cost + 1))
                     open.add(BFSEntry(npos, nmask, cost + 1))
                 }
             }
-            ans[src] = map
+            ans[src] = successors
         }
 
         return ans
@@ -73,8 +73,7 @@ fun main() {
             if(mask == allMask) return cost
             if(closed[ClosedEntry(state, mask)].let { it != null && it < cost }) continue
             for(bot in 0 until numBots) {
-                for((dest, distResult) in distMap[state[bot]]!!) {
-                    val (doorMask, dist) = distResult
+                for((dest, doorMask, dist) in distMap[state[bot]]!!) {
                     if(mask.getBit(dest - 'a') || doorMask and mask != doorMask) continue
                     val nstate = buildString {
                         append(state)
@@ -119,7 +118,7 @@ inline fun Int.getBit(i: Int) = shr(i) and 1 == 1
 inline fun Int.setBit(i: Int) = or(1 shl i)
 
 data class BFSEntry(val pos: Vec2, val mask: Int, val cost: Int)
-data class DistResult(val mask: Int, val cost: Int)
+data class SuccEntry(val dest: Char, val mask: Int, val cost: Int)
 data class OpenEntry(val state: String, val mask: Int, val cost: Int)
 @Suppress("EqualsOrHashCode")
 data class ClosedEntry(val state: String, val mask: Int) {
