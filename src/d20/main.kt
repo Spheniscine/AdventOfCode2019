@@ -118,6 +118,7 @@ fun main() {
             }
             ans[src] = successors
         }
+        ans[end] = emptyList()
 
         ans
     }
@@ -134,8 +135,6 @@ fun main() {
             if(state == goal) return@run cost
             if(closed[state].let { it != null && it < cost }) continue
             for((dest, dz, dist) in distMap[state.x, state.y]!!) {
-                if(dest == end && state.z != 0) continue
-
                 val nz = state.z + dz
                 if(nz < 0) continue // negative z is invalid
 
