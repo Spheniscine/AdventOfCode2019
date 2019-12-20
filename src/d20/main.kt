@@ -98,11 +98,11 @@ fun main() {
     printTime()
 
     markTime()
-    val distMap: Map<Vec2, Map<Vec2, Int>> = run {
-        val ans = HashMap<Vec2, Map<Vec2, Int>>()
+    val distMap: Map<Vec2, List<SuccEntry>> = run {
+        val ans = HashMap<Vec2, List<SuccEntry>>()
 
         for(src in sequenceOf(start) + warps.keys) {
-            val map = HashMap<Vec2, Int>()
+            val successors = mutableListOf<SuccEntry>()
             val closed = hashSetOf(src)
             val open = ArrayDeque<BFSEntry>()
             open.add(BFSEntry(src, 0))
@@ -115,13 +115,17 @@ fun main() {
                     val tile = maze[npos]
                     if(tile != '.' || closed.add(npos).not()) continue
                     when {
-                        npos == end -> map[npos] = cost + 1
-                        npos != src && warps.containsKey(npos) -> map[warps[npos]!!] = cost + 2
+                        npos == end -> successors.add(SuccEntry(npos, 0, cost + 1))
+                        npos != src && warps.containsKey(npos) -> {
+                            // if gate is on outer edge, our z will decrease, otherwise it will increase
+                            val dz = if ((npos.x == 2 || npos.x == w-3) || (npos.y == 2 || npos.y == h-3)) -1 else 1
+                            successors.add(SuccEntry(warps[npos]!!, dz, cost + 2))
+                        }
                     }
                     open.add(BFSEntry(npos, cost + 1))
                 }
             }
-            ans[src] = map
+            ans[src] = successors
         }
 
         ans
@@ -138,12 +142,10 @@ fun main() {
             val (state, cost) = open.poll() ?: break
             if(state == goal) return@run cost
             if(closed[state].let { it != null && it < cost }) continue
-            for((dest, dist) in distMap[state.x, state.y]!!) {
+            for((dest, dz, dist) in distMap[state.x, state.y]!!) {
                 if(dest == end && state.z != 0) continue
 
-                // if the new position is on the outer edge, we just warped inward, otherwise, we warped outward
-                val inward = (dest.x == 2 || dest.x == w-3) || (dest.y == 2 || dest.y == h-3)
-                val nz = if(dest == end) 0 else state.z + (if(inward) 1 else -1)
+                val nz = state.z + dz
                 if(nz < 0) continue // negative z is invalid
 
                 val nstate = dest.z(nz)
@@ -165,6 +167,7 @@ operator fun List<String>.get(x: Int, y: Int) = if(y in indices && x in this[y].
 operator fun List<String>.get(pos: Vec2) = this[pos.x, pos.y]
 
 data class BFSEntry(val pos: Vec2, val cost: Int)
+data class SuccEntry(val pos: Vec2, val dz: Int, val cost: Int)
 data class Dijk<T>(val state: T, val cost: Int)
 
 fun Vec2.z(z: Int) = Vec3(x, y, z)
