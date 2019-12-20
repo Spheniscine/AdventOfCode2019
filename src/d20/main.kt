@@ -97,6 +97,7 @@ fun main() {
     println("Part 1: $ans1")
     printTime()
 
+    markTime()
     val distMap: Map<Vec2, Map<Vec2, Int>> = run {
         val ans = HashMap<Vec2, Map<Vec2, Int>>()
 
@@ -108,14 +109,14 @@ fun main() {
 
             while(true) {
                 val (pos, cost) = open.poll() ?: break
-                
+
                 for(dir in Dir2.values) {
                     val npos = pos + dir
                     val tile = maze[npos]
                     if(tile != '.' || closed.add(npos).not()) continue
-                    if(npos != src) when {
+                    when {
                         npos == end -> map[npos] = cost + 1
-                        warps.containsKey(npos) -> map[warps[npos]!!] = cost + 2
+                        npos != src && warps.containsKey(npos) -> map[warps[npos]!!] = cost + 2
                     }
                     open.add(BFSEntry(npos, cost + 1))
                 }
@@ -126,7 +127,7 @@ fun main() {
         ans
     }
 
-    markTime()
+
     val ans2 = run {
         val closed = HashMap<Vec3, Int>()
         val open = PriorityQueue<Dijk<Vec3>>(11, compareBy { it.cost })
