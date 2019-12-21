@@ -150,4 +150,23 @@ class IntCodeVM(program: List<Long>) {
 
         return new
     }
+
+    // ASCII extensions
+    fun inputAscii(string: String) {
+        for(char in string) input(char.toLong())
+        input('\n'.toLong())
+    }
+    fun inputAscii(strings: Iterable<String>) { for(string in strings) inputAscii(string) }
+
+    fun outputToAscii() = output.let { o -> String(CharArray(o.size) { o[it].toChar() }) }
+
+    fun runAsConsole() {
+        while(true) {
+            execute()
+            println(outputToAscii())
+            output.clear()
+            if(isWaiting) inputAscii(readLine()!!)
+            else break
+        }
+    }
 }

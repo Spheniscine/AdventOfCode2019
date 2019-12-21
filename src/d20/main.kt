@@ -13,9 +13,9 @@ fun main() {
     println("--- Day 20: Donut Maze ---")
 
     markTime()
-    val maze = input.lines()
-    val h = maze.size
-    val w = maze.maxBy { it.length }!!.length
+    val grid = input.lines()
+    val h = grid.size
+    val w = grid.maxBy { it.length }!!.length
 
     val portalRegex = Regex("[A-Z]{2}")
 
@@ -34,10 +34,10 @@ fun main() {
     }
 
     for(y in 0 until h) {
-        val row = maze[y]
+        val row = grid[y]
 
         for(match in portalRegex.findAll(row)) {
-            if(maze[match.range.last+1, y] == '.') {
+            if(grid[match.range.last+1, y] == '.') {
                 connectGate(match.value, Vec2(match.range.last+1, y))
             } else {
                 connectGate(match.value, Vec2(match.range.first-1, y))
@@ -46,10 +46,10 @@ fun main() {
     }
 
     for(x in 0 until w) {
-        val col = String(CharArray(h) { maze[x, it] })
+        val col = String(CharArray(h) { grid[x, it] })
 
         for(match in portalRegex.findAll(col)) {
-            if(maze[x, match.range.last+1] == '.') {
+            if(grid[x, match.range.last+1] == '.') {
                 connectGate(match.value, Vec2(x, match.range.last+1))
             } else {
                 connectGate(match.value, Vec2(x, match.range.first-1))
@@ -72,7 +72,7 @@ fun main() {
             val neighbors = mutableListOf<Vec2>()
             for(dir in Dir2.values) {
                 val npos = pos + dir
-                if(maze[npos] == '.') neighbors.add(npos)
+                if(grid[npos] == '.') neighbors.add(npos)
             }
             warps[pos]?.let { neighbors.add(it) }
 
@@ -103,11 +103,11 @@ fun main() {
 
                 for(dir in Dir2.values) {
                     val npos = pos + dir
-                    val tile = maze[npos]
+                    val tile = grid[npos]
                     if(tile != '.' || closed.add(npos).not()) continue
                     when {
                         npos == end -> successors.add(SuccEntry(npos, 0, cost + 1))
-                        npos != src && warps.containsKey(npos) -> {
+                        warps.containsKey(npos) -> {
                             // if gate is on outer edge, our z will decrease, otherwise it will increase
                             val dz = if ((npos.x == 2 || npos.x == w-3) || (npos.y == 2 || npos.y == h-3)) -1 else 1
                             successors.add(SuccEntry(warps[npos]!!, dz, cost + 2))

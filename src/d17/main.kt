@@ -16,8 +16,7 @@ fun main() {
     vm.mem[0] = 2
     vm.execute()
 
-    val map = vm.output.let { o -> String(CharArray(o.size) { o[it].toChar() }) }
-        .lineSequence().filter { it.isNotEmpty() }.toList()
+    val map = vm.outputToAscii().lineSequence().filter { it.isNotEmpty() }.toList()
 
     fun ok(pos: Vec2) = pos.y in map.indices && pos.x in map[pos.y].indices && map[pos.y][pos.x] != '.'
 
@@ -77,9 +76,9 @@ fun main() {
 
     val (main, macros) = compress(strat) ?: error("Part 2 heuristic failed.")
 
-    vm.input(main)
-    for(macro in macros) vm.input(macro)
-    vm.input("n")
+    vm.inputAscii(main)
+    for(macro in macros) vm.inputAscii(macro)
+    vm.inputAscii("n")
 
     vm.execute()
 
@@ -91,11 +90,6 @@ fun main() {
 }
 
 data class CompressResult(val main: String, val macros: List<String>)
-
-private fun IntCodeVM.input(string: String) {
-    for(char in string) input(char.toLong())
-    input('\n'.toLong())
-}
 
 private fun stratToMacro(strat: String) = strat.runs().map {
     if(it.item == '1') it.num else it.item
