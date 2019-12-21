@@ -12,5 +12,5 @@ fun main() {
 
     val vm = IntCodeVM(prog)
     vm.execute()
-    println(vm.output.let { o -> String(CharArray(o.size) { o[it].toChar() }) })
+    println(vm.outputToAscii())
 }

@@ -4,8 +4,8 @@ OR T J
 NOT C T
 OR T J
 AND D J
-NOT H T
+NOT E T
 NOT T T
-OR E T
+OR H T
 AND T J
 RUN

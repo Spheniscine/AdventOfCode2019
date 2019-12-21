@@ -77,7 +77,7 @@ fun main() {
     val (main, macros) = compress(strat) ?: error("Part 2 heuristic failed.")
 
     vm.inputAscii(main)
-    for(macro in macros) vm.inputAscii(macro)
+    vm.inputAscii(macros)
     vm.inputAscii("n")
 
     vm.execute()
