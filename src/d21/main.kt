@@ -5,8 +5,8 @@ import d9.IntCodeVM
 import java.io.File
 
 private val input by lazy { File("src/d21/input/gmail.in").readText() }
-private val script1 by lazy { File("src/d21/res/part1.springscript").readText() }
-private val script2 by lazy { File("src/d21/res/part2.springscript").readText() }
+private val script1 by lazy { File("src/d21/res/part1.spr").readText() }
+private val script2 by lazy { File("src/d21/res/part2.spr").readText() }
 
 fun main() {
     println("--- Day 21: Springdroid Adventure ---")

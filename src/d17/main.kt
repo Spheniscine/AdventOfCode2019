@@ -86,7 +86,7 @@ fun main() {
     println("Part 2: $ans2")
     printTime()
 
-    // println(vm.output.joinToString("") { it.toChar().toString() })
+    // println(vm.outputToAscii())
 }
 
 data class CompressResult(val main: String, val macros: List<String>)
