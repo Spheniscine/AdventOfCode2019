@@ -163,7 +163,7 @@ class IntCodeVM(program: List<Long>) {
     fun runAsConsole() {
         while(true) {
             execute()
-            println(outputToAscii())
+            print(outputToAscii())
             output.clear()
             if(isWaiting) inputAscii(readLine()!!)
             else break
