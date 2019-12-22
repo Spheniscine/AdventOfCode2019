@@ -28,7 +28,7 @@ fun main() {
  * k - iterations, positive = get position of card x, negative = get card in position x
  */
 fun solve(x: Long, n: Long, k: Long): Long {
-    // compose basis transform
+    // compose basis function
     // f(x) = ax + b
     var a: BigInteger = BigInteger.ONE
     var b: BigInteger = BigInteger.ZERO
@@ -57,13 +57,13 @@ fun solve(x: Long, n: Long, k: Long): Long {
         }
     }
 
-    // invert basis transform. f^-1(x) = (a^-1)(x - b)
+    // invert basis function. f^-1(x) = (a^-1)(x - b)
     if(k < 0) {
         a = a.modInverse(m)
         b = (-b * a).mod(m)
     }
 
-    // start exponentiation for transform, f^k(x) = cx + d
+    // start exponentiation for function, f^k(x) = cx + d
     var c: BigInteger = BigInteger.ONE
     var d: BigInteger = BigInteger.ZERO
     var e = abs(k)
