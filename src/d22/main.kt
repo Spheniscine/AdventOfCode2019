@@ -38,20 +38,20 @@ fun solve(x: Long, n: Long, k: Long): Long {
     for(ln in instructions) {
         when {
             ln == "deal into new stack" -> {
-                // x → -x - 1
+                // x → -x - 1; ax + b → -ax - b - 1
                 a = (-a).mod(m)
-                b = b.not().mod(m) // b.not() = -(b + 1)
+                b = b.not().mod(m) // b.not() = -b - 1
             }
             "cut" in ln -> {
-                // x → x - arg
-                val arg = ln.split(' ').last().toBigInteger()
-                b = (b - arg).mod(m)
+                // x → x - i; ax + b → ax + b - i
+                val i = ln.split(' ').last().toBigInteger()
+                b = (b - i).mod(m)
             }
             "deal with increment" in ln -> {
-                // x → x · arg
-                val arg = ln.split(' ').last().toBigInteger()
-                a = a * arg % m
-                b = b * arg % m
+                // x → x · i; ax + b → aix + bi
+                val i = ln.split(' ').last().toBigInteger()
+                a = a * i % m
+                b = b * i % m
             }
             else -> error("Unrecognized instruction: $ln")
         }
@@ -73,6 +73,7 @@ fun solve(x: Long, n: Long, k: Long): Long {
     // ⌊ b 1 ⌋
     while(e > 0) {
         if(e and 1 == 1L) {
+            // a(cx + d) + b = acx + (ad + b)
             c = a * c % m
             d = (a * d + b) % m
         }
