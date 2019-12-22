@@ -9,7 +9,7 @@ private val input by lazy { File("src/d22/input/gmail.in").readText() }
 private val instructions by lazy { input.lines() }
 
 fun main() {
-    println("--- Day 22 ---")
+    println("--- Day 22: Slam Shuffle ---")
 
     markTime()
     val ans1 = solve(2019, 10007, 1)
