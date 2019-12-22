@@ -25,9 +25,11 @@ fun main() {
 /**
  * x - input number
  * n - number of cards
- * k - iterations, positive = get position of card, negative = get card in position
+ * k - iterations, positive = get position of card x, negative = get card in position x
  */
 fun solve(x: Long, n: Long, k: Long): Long {
+    // compose basis transform
+    // f(x) = ax + b
     var a: BigInteger = BigInteger.ONE
     var b: BigInteger = BigInteger.ZERO
 
@@ -36,14 +38,17 @@ fun solve(x: Long, n: Long, k: Long): Long {
     for(ln in instructions) {
         when {
             ln == "deal into new stack" -> {
+                // x → -x - 1
                 a = (-a).mod(m)
                 b = b.not().mod(m) // b.not() = -(b + 1)
             }
             "cut" in ln -> {
+                // x → x - arg
                 val arg = ln.split(' ').last().toBigInteger()
                 b = (b - arg).mod(m)
             }
             "deal with increment" in ln -> {
+                // x → x · arg
                 val arg = ln.split(' ').last().toBigInteger()
                 a = a * arg % m
                 b = b * arg % m
@@ -52,15 +57,20 @@ fun solve(x: Long, n: Long, k: Long): Long {
         }
     }
 
+    // invert basis transform. f^-1(x) = (a^-1)(x - b)
     if(k < 0) {
         a = a.modInverse(m)
         b = (-b * a).mod(m)
     }
 
+    // start exponentiation for transform, f^k(x) = cx + d
     var c: BigInteger = BigInteger.ONE
     var d: BigInteger = BigInteger.ZERO
     var e = abs(k)
 
+    // exponentiation by squaring. Equivalent to computing
+    // ⌈ a 0 ⌉ k
+    // ⌊ b 1 ⌋
     while(e > 0) {
         if(e and 1 == 1L) {
             c = a * c % m
