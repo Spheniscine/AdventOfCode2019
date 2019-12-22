@@ -37,7 +37,7 @@ fun solve(x: Long, n: Long, k: Long): Long {
         when {
             ln == "deal into new stack" -> {
                 a = (-a).mod(m)
-                b = (-b).dec().mod(m)
+                b = b.not().mod(m) // b.not() = -(b + 1)
             }
             "cut" in ln -> {
                 val arg = ln.split(' ').last().toBigInteger()
