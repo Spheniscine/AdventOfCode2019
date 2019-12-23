@@ -21,7 +21,7 @@ fun main() {
         var natx = 0L
         var naty = 0L
         var natActive = false
-        val natHist = LongHashSet()
+        var natHist: Long? = null
 
         while(true) {
             for (nic in nics) nic.execute()
@@ -46,7 +46,8 @@ fun main() {
                 if(!hasInput[i]) nics[i].input(-1)
             }
             if(natActive && hasInput.none { it }) {
-                if(natHist.add(naty).not()) return@run naty
+                if(natHist == naty) return@run naty
+                natHist = naty
                 nics[0].input(natx)
                 nics[0].input(naty)
             }
