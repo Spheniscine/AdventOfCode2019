@@ -184,3 +184,5 @@ abstract class MapBackedSet<T>(val _map: MutableMap<T, Unit>): AbstractMutableSe
         override fun remove() = mapIterator.remove()
     }
 }
+
+open class LongHashSet(_map: MutableMap<Long, Unit> = LongHashMap()): MapBackedSet<Long>(_map)

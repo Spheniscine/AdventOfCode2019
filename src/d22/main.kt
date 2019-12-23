@@ -85,6 +85,9 @@ fun solve(x: Long, n: Long, k: Long): Long {
     return (x.toBigInteger() * c + d).mod(m).toLong()
 }
 
+/**
+ * Naive shuffler
+ */
 fun doShuffle(n: Int, k: Int): IntArray {
     val deck = IntArray(n) { it }
     repeat(k) {
