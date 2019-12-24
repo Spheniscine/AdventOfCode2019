@@ -10,6 +10,16 @@ fun splitmix64(seed: Long): Long {
 }
 fun Long.hash() = splitmix64(_seed1 xor this)
 
+fun splitmix32(seed: Int): Int {
+    var x = seed - 1640531527
+    x = (x xor (x ushr 17)) * -312814405
+    x = (x xor (x ushr 11)) * -1404298415
+    x = (x xor (x ushr 15)) * 830770091
+    return (x xor (x ushr 14))
+}
+@JvmField val nonce32 = _seed1.toInt()
+fun Int.hash() = splitmix32(nonce32 xor this)
+
 private inline infix fun Int.rol(dist: Int) = shl(dist) or ushr(-dist)
 val sipHasher by lazy { HalfSipHash() }
 class HalfSipHash(val k0: Int = _seed1.toInt(), val k1: Int = _seed1.shr(32).toInt()) {
@@ -171,6 +181,17 @@ open class LongHashMap<V>(_del: HashMap<Hash, V> = HashMap()) : WrappedKeyMap<Lo
     }
 }
 
+open class IntHashMap<V>(_del: HashMap<Hash, V> = HashMap()) : WrappedKeyMap<Int, IntHashMap.Hash, V>(_del) {
+    override fun wrap(key: Int): Hash = Hash(key)
+    override fun unwrap(key: Hash): Int = key.data
+
+    class Hash(val data: Int) {
+        override fun hashCode(): Int = data.hash()
+        override fun equals(other: Any?) =
+            other is Hash && data == other.data
+    }
+}
+
 abstract class MapBackedSet<T>(val _map: MutableMap<T, Unit>): AbstractMutableSet<T>() {
     override val size: Int get() = _map.size
     override fun add(element: T): Boolean = _map.put(element, Unit) == null
@@ -186,3 +207,5 @@ abstract class MapBackedSet<T>(val _map: MutableMap<T, Unit>): AbstractMutableSe
 }
 
 open class LongHashSet(_map: MutableMap<Long, Unit> = LongHashMap()): MapBackedSet<Long>(_map)
+
+open class IntHashSet(_map: MutableMap<Int, Unit> = IntHashMap()): MapBackedSet<Int>(_map)
