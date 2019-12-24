@@ -12,7 +12,7 @@ private val initGrid by lazy {
 }
 
 fun main() {
-    println("--- Day 24 ---")
+    println("--- Day 24: Planet of Discord ---")
 
     markTime()
     val ans1 = Simulator().ans1()

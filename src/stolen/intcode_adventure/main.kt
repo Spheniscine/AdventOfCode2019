@@ -1,9 +1,9 @@
-package extras.intcode_adventure
+package stolen.intcode_adventure
 
 import d9.IntCodeVM
 import java.io.File
 
-private val input by lazy { File("src/extras/intcode_adventure/intcode_adventure.in").readText() }
+private val input by lazy { File("src/stolen/intcode_adventure/intcode_adventure.in").readText() }
 
 // https://www.reddit.com/r/adventofcode/comments/edl79n/
 // author: reddit user sbguest
