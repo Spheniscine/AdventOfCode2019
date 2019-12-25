@@ -4,6 +4,7 @@ import commons.*
 import d9.IntCodeVM
 import java.io.File
 import java.util.EnumMap
+import kotlin.math.*
 
 private val input by lazy { File("src/d25/input/gmail.in").readText() }
 
@@ -38,6 +39,7 @@ private val dangerousItems by lazy {
     File("src/d25/res/dangerous.txt").readLines().toCollection(StringHashSet())
 }
 private val passwordRegex by lazy { Regex("""\d+""")}
+val Int.numTrailingZeros get() = Integer.numberOfTrailingZeros(this)
 
 class SaintBernardAI(val vm: IntCodeVM) {
     val rooms = StringHashMap<Room>()
@@ -129,25 +131,30 @@ class SaintBernardAI(val vm: IntCodeVM) {
         vm.output.clear()
 
         // find direction to pressure sensitive floor
-        val (dir: Dir2) = securityRoom.doors.entries.first { it.value.name == CHECK_ROOM_NAME }
+        val dir = securityRoom.doors.entries.first { it.value.name == CHECK_ROOM_NAME }.key!!
 
         // bruteforce all 2^8 item combinations
-        var currItems: List<String> = items
-        for(comb in items.allCombinations()) {
-            for(item in currItems) vm.inputAscii("drop $item")
-            for(item in comb) vm.inputAscii("take $item")
-            vm.execute()
-            vm.output.clear()
+        val grayCode = IntArray(1 shl items.size) { it xor it.shr(1) }.iterator()
+        var curr = grayCode.next()
+        while(true) {
             vm.inputAscii(dir.label)
             vm.execute()
             val out = vm.outputToAscii()
-            currItems = comb
-            if("heavier" in out || "lighter" in out) continue
-            else {
+            if("heavier" !in out && "lighter" !in out) {
                 // found it! Parse Santa's answer
                 ans = passwordRegex.find(out)!!.value
                 break
             }
+
+            if(grayCode.hasNext().not()) error("solution not found")
+            val next = grayCode.nextInt()
+            val d = curr - next
+            val item = items[abs(d).numTrailingZeros]
+            if(d > 0) vm.inputAscii("take $item")
+            else vm.inputAscii("drop $item")
+            vm.execute()
+            vm.output.clear()
+            curr = next
         }
     }
 }
