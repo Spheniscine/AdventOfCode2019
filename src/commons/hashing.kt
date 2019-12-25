@@ -206,6 +206,8 @@ abstract class MapBackedSet<T>(val _map: MutableMap<T, Unit>): AbstractMutableSe
     }
 }
 
+open class StringHashSet(_map: MutableMap<String, Unit> = StringHashMap()): MapBackedSet<String>(_map)
+
 open class LongHashSet(_map: MutableMap<Long, Unit> = LongHashMap()): MapBackedSet<Long>(_map)
 
 open class IntHashSet(_map: MutableMap<Int, Unit> = IntHashMap()): MapBackedSet<Int>(_map)
