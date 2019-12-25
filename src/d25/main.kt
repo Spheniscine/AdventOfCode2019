@@ -54,7 +54,13 @@ class SaintBernardAI(val vm: IntCodeVM) {
         vm.output.clear()
 
         val name = out[0].removeSurrounding("== ", " ==")
-        rooms[name]?.let { return it }
+        rooms[name]?.let { room ->
+            prev?.let {(dir, neighbor) ->
+                room.doors[dir] = neighbor
+                room.path = neighbor.path + (-dir)
+            }
+            return room
+        }
         val desc = out[1]
         val room = Room(name, desc)
         addRoom(room)
