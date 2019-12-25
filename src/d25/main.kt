@@ -59,7 +59,6 @@ class SaintBernardAI(val vm: IntCodeVM) {
         rooms[name]?.let { room ->
             prev?.let {(dir, neighbor) ->
                 room.doors[dir] = neighbor
-                room.path = neighbor.path + (-dir)
             }
             return room
         }
