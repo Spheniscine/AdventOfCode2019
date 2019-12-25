@@ -134,6 +134,12 @@ class SaintBernardAI(val vm: IntCodeVM) {
         val dir = securityRoom.doors.entries.first { it.value.name == CHECK_ROOM_NAME }.key!!
 
         // bruteforce all 2^8 item combinations
+
+        // Gray code - a sequence with only a single bit difference between consecutive items, which means only one
+        // take/drop command
+
+        // 1 bit means the item should be dropped, 0 bit means held. Reversed meaning because we hold all items
+        // at the start
         val grayCode = IntArray(1 shl items.size) { it xor it.shr(1) }.iterator()
         var curr = grayCode.next()
         while(true) {

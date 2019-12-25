@@ -22,8 +22,6 @@ fun <T> Iterable<T>.combinations(length: Int): Sequence<List<T>> =
         }
     }
 
-fun <T> Collection<T>.allCombinations() = (0 until size).asSequence().flatMap { combinations(it) }
-
 fun <T> Iterable<T>.permutations(length: Int? = null): Sequence<List<T>> =
     sequence {
         @Suppress("UNCHECKED_CAST")
