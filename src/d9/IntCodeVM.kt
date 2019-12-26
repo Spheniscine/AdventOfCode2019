@@ -162,9 +162,12 @@ class IntCodeVM(program: List<Long>) {
 
     fun runAsConsole() {
         while(true) {
-            execute()
-            print(outputToAscii())
-            output.clear()
+            do {
+                if(output.isNotEmpty()) {
+                    print(outputToAscii())
+                    output.clear()
+                }
+            } while (step() == OK)
             if(isWaiting) inputAscii(readLine()!!)
             else break
         }

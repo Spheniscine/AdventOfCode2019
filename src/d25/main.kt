@@ -14,6 +14,7 @@ fun main() {
     markTime()
     val prog = input.split(',').map { it.toLong() }
     val vm = IntCodeVM(prog)
+//    vm.runAsConsole()
 
     val ai = SaintBernardAI(vm)
     ai.go()
