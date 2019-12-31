@@ -3,6 +3,7 @@ package d9
 import commons.*
 import d9.IntCodeVM.Status.*
 import java.util.ArrayDeque
+import kotlin.math.*
 
 class IntCodeVM(program: List<Long>) {
 
@@ -36,11 +37,27 @@ class IntCodeVM(program: List<Long>) {
         data class Error(val exception: Exception): Status()
     }
 
-    val mem = LongHashMap<Long>().default(0).also { mem ->
-        for(i in program.indices) {
-            mem[i.toLong()] = program[i]
+//    val mem = LongHashMap<Long>().default(0).also { mem ->
+//        for(i in program.indices) {
+//            mem[i.toLong()] = program[i]
+//        }
+//    }
+
+    class Memory(program: List<Long>) {
+        var arr = program.toLongArray()
+        operator fun get(i: Long) = if(i >= arr.size) 0 else arr[i.toInt()]
+        operator fun set(i: Long, v: Long) {
+            if(i >= arr.size) {
+                if(i > Int.MAX_VALUE shr 1) throw OutOfMemoryError()
+                arr = arr.copyOf(max(i.toInt() + 1, arr.size + arr.size.shr(1)))
+            }
+            arr[i.toInt()] = v
         }
+
+        fun clone() = Memory(arr.asList())
     }
+
+    var mem = Memory(program)
 
     var status: Status = OK
     val isWaiting get() = status is Waiting
@@ -141,7 +158,7 @@ class IntCodeVM(program: List<Long>) {
 
     fun clone(): IntCodeVM {
         val new = IntCodeVM(emptyList())
-        new.mem.putAll(mem)
+        new.mem = mem.clone()
         new.status = status
         new.ip = ip
         new.rb = rb

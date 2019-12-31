@@ -2,6 +2,7 @@ package stolen.intcode_d4
 
 import commons.*
 import d5.IntCodeVM_d5
+import d9.IntCodeVM
 import java.io.File
 
 private val input by lazy { File("src/d4/input/gmail.in").readText() }
@@ -16,7 +17,7 @@ fun main() {
 
     val (a, b) = input.split('-').map { it.toInt() }
 
-    val vm = IntCodeVM_d5(prog)
+    val vm = IntCodeVM(prog)
     vm.input(a)
     vm.input(b)
     vm.execute()
