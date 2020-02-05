@@ -64,27 +64,28 @@ fun main() {
     fun solve(numBots: Int): Int {
         val distMap = distMap()
 
-        val closed = HashMap<ClosedEntry, Int>()
-        val open = PriorityQueue<OpenEntry>(11, compareBy { it.cost })
-        open.add(OpenEntry(String(CharArray(numBots) { '0' + it }), 0, 0))
+        val closed = HashMap<State, Int>()
+        val open = PriorityQueue<Cost<State>>(11, compareBy { it.cost })
+        open.add(Cost(State(String(CharArray(numBots) { '0' + it }), 0), 0))
 
         while(true) {
-            val (state, mask, cost) = open.poll() ?: break
+            val (state, cost) = open.poll() ?: break
+            val (pos, mask) = state
             if(mask == allMask) return cost
-            if(closed[ClosedEntry(state, mask)].let { it != null && it < cost }) continue
+            if(closed[state].let { it != null && it < cost }) continue
             for(bot in 0 until numBots) {
-                for((dest, doorMask, dist) in distMap[state[bot]]!!) {
+                for((dest, doorMask, dist) in distMap[pos[bot]]!!) {
                     if(mask.getBit(dest - 'a') || doorMask and mask != doorMask) continue
-                    val nstate = buildString {
-                        append(state)
+                    val npos = buildString {
+                        append(pos)
                         set(bot, dest)
                     }
                     val nmask = mask.setBit(dest - 'a')
                     val ncost = cost + dist
-                    val closedEntry = ClosedEntry(nstate, nmask)
-                    if(closed[closedEntry].let { it != null && it <= ncost }) continue
-                    closed[closedEntry] = ncost
-                    open.add(OpenEntry(nstate, nmask, ncost))
+                    val nstate = State(npos, nmask)
+                    if(closed[nstate].let { it != null && it <= ncost }) continue
+                    closed[nstate] = ncost
+                    open.add(Cost(State(npos, nmask), ncost))
                 }
             }
         }
@@ -119,11 +120,11 @@ inline fun Int.setBit(i: Int) = or(1 shl i)
 
 data class BFSEntry(val pos: Vec2, val mask: Int, val cost: Int)
 data class SuccEntry(val dest: Char, val mask: Int, val cost: Int)
-data class OpenEntry(val state: String, val mask: Int, val cost: Int)
+data class Cost<T>(val state: T, val cost: Int)
 @Suppress("EqualsOrHashCode")
-data class ClosedEntry(val state: String, val mask: Int) {
+data class State(val pos: String, val mask: Int) {
     override fun hashCode(): Int = sipHasher.doHash {
-        acc(state)
+        acc(pos)
         acc(mask)
     }
 }

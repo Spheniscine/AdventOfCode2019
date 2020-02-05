@@ -126,8 +126,8 @@ fun main() {
 
     val ans2 = run {
         val closed = HashMap<Vec3, Int>()
-        val open = PriorityQueue<Dijk<Vec3>>(11, compareBy { it.cost })
-        open.add(Dijk(start.z(0), 0))
+        val open = PriorityQueue<Cost<Vec3>>(11, compareBy { it.cost })
+        open.add(Cost(start.z(0), 0))
         val goal = end.z(0)
 
         while(true) {
@@ -143,7 +143,7 @@ fun main() {
 
                 if(closed[nstate].let { it != null && it <= ncost }) continue
                 closed[nstate] = ncost
-                open.add(Dijk(nstate, ncost))
+                open.add(Cost(nstate, ncost))
             }
         }
 
@@ -158,7 +158,7 @@ operator fun List<String>.get(pos: Vec2) = this[pos.x, pos.y]
 
 data class BFSEntry(val pos: Vec2, val cost: Int)
 data class SuccEntry(val pos: Vec2, val dz: Int, val cost: Int)
-data class Dijk<T>(val state: T, val cost: Int)
+data class Cost<T>(val state: T, val cost: Int)
 
 fun Vec2.z(z: Int) = Vec3(x, y, z)
 

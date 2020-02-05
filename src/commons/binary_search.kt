@@ -1,39 +1,8 @@
 package commons
 
-/**
- * Binary searches the given integer range based on the given lambda.
- * [goldilocks] should be a function that returns a positive value to indicate "too much"
- * , a negative value to indicate "too little", and 0 to indicate "just right".
- *
- * If no "just right" is found, the result will have exactFound = false and
- * the lowest possible "too much" value, which may be outside the range if the
- * entire range returns "too little"
- */
-fun IntRange.binarySearchBy(goldilocks: (Int) -> Int): IntBinarySearchResult {
-    var low = start
-    var high = endInclusive
-
-    while (low <= high) {
-        val mid = low.and(high) + low.xor(high).shr(1)
-        val cmp = goldilocks(mid)
-
-        when {
-            cmp < 0 -> low = mid + 1
-            cmp > 0 -> high = mid - 1
-            else -> return IntBinarySearchResult(mid, true)
-        }
-    }
-    return IntBinarySearchResult(low, false)
-}
-
-data class IntBinarySearchResult(val value: Int, val exactFound: Boolean) {
-    val floor get() = if(exactFound) value else value - 1
-    inline val ceil get() = value
-}
-
-fun IntRange.bsFirst(predicate: (Int) -> Boolean): Int {
-    var low = start
-    var high = endInclusive
+inline fun bsFirst(first: Int, last: Int, predicate: (Int) -> Boolean): Int {
+    var low = first
+    var high = last
 
     while (low <= high) {
         val mid = low.and(high) + low.xor(high).shr(1)
@@ -42,44 +11,38 @@ fun IntRange.bsFirst(predicate: (Int) -> Boolean): Int {
     }
     return low
 }
+inline fun IntRange.bsFirst(predicate: (Int) -> Boolean) = bsFirst(first, last, predicate)
 
-inline fun IntRange.bsLast(crossinline predicate: (Int) -> Boolean) = bsFirst { !predicate(it) } - 1
+inline fun bsLast(first: Int, last: Int, predicate: (Int) -> Boolean) = bsFirst(first, last) { !predicate(it) } - 1
+inline fun IntRange.bsLast(predicate: (Int) -> Boolean) = bsLast(first, last, predicate)
 
-inline fun <T> List<T>.bsIndexOfFirst(crossinline predicate: (T) -> Boolean) = indices.bsFirst { predicate(get(it)) }
-inline fun <T> List<T>.bsFirst(crossinline predicate: (T) -> Boolean) = get(bsIndexOfFirst(predicate))
-inline fun <T> List<T>.bsFirstOrNull(crossinline predicate: (T) -> Boolean) = getOrNull(bsIndexOfFirst(predicate))
-inline fun <T> List<T>.bsIndexOfLast(crossinline predicate: (T) -> Boolean) = indices.bsLast { predicate(get(it)) }
-inline fun <T> List<T>.bsLast(crossinline predicate: (T) -> Boolean) = get(bsIndexOfLast(predicate))
-inline fun <T> List<T>.bsLastOrNull(crossinline predicate: (T) -> Boolean) = getOrNull(bsIndexOfLast(predicate))
+inline fun <T> List<T>.bsIndexOfFirst(predicate: (T) -> Boolean) = bsFirst(0, lastIndex) { predicate(get(it)) }
+inline fun <T> List<T>.bsFirst(predicate: (T) -> Boolean) = get(bsIndexOfFirst(predicate))
+inline fun <T> List<T>.bsFirstOrNull(predicate: (T) -> Boolean) = getOrNull(bsIndexOfFirst(predicate))
+inline fun <T> List<T>.bsIndexOfLast(predicate: (T) -> Boolean) = bsLast(0, lastIndex) { predicate(get(it)) }
+inline fun <T> List<T>.bsLast(predicate: (T) -> Boolean) = get(bsIndexOfLast(predicate))
+inline fun <T> List<T>.bsLastOrNull(predicate: (T) -> Boolean) = getOrNull(bsIndexOfLast(predicate))
 
 fun <T: Comparable<T>> List<T>.bsHigher(v: T) = bsFirstOrNull { it > v }
 fun <T: Comparable<T>> List<T>.bsLower(v: T) = bsLastOrNull { it < v }
+fun <T: Comparable<T>> List<T>.bsCeiling(v: T) = bsFirstOrNull { it >= v }
+fun <T: Comparable<T>> List<T>.bsFloor(v: T) = bsLastOrNull { it <= v }
 
-fun LongRange.binarySearchBy(goldilocks: (Long) -> Int): LongBinarySearchResult {
-    var low = start
-    var high = endInclusive
+inline fun LongArray.bsIndexOfFirst(predicate: (Long) -> Boolean) = bsFirst(0, lastIndex) { predicate(get(it)) }
+inline fun LongArray.bsFirst(predicate: (Long) -> Boolean) = get(bsIndexOfFirst(predicate))
+inline fun LongArray.bsFirstOrNull(predicate: (Long) -> Boolean) = getOrNull(bsIndexOfFirst(predicate))
+inline fun LongArray.bsIndexOfLast(predicate: (Long) -> Boolean) = bsLast(0, lastIndex) { predicate(get(it)) }
+inline fun LongArray.bsLast(predicate: (Long) -> Boolean) = get(bsIndexOfLast(predicate))
+inline fun LongArray.bsLastOrNull(predicate: (Long) -> Boolean) = getOrNull(bsIndexOfLast(predicate))
 
-    while (low <= high) {
-        val mid = low.and(high) + low.xor(high).shr(1)
-        val cmp = goldilocks(mid)
+fun LongArray.bsHigher(v: Long) = bsFirstOrNull { it > v }
+fun LongArray.bsLower(v: Long) = bsLastOrNull { it < v }
+fun LongArray.bsCeiling(v: Long) = bsFirstOrNull { it >= v }
+fun LongArray.bsFloor(v: Long) = bsLastOrNull { it <= v }
 
-        when {
-            cmp < 0 -> low = mid + 1
-            cmp > 0 -> high = mid - 1
-            else -> return LongBinarySearchResult(mid, true)
-        }
-    }
-    return LongBinarySearchResult(low, false)
-}
-
-data class LongBinarySearchResult(val value: Long, val exactFound: Boolean) {
-    val floor get() = if(exactFound) value else value - 1
-    inline val ceil get() = value
-}
-
-fun LongRange.bsFirst(predicate: (Long) -> Boolean): Long {
-    var low = start
-    var high = endInclusive
+inline fun bsFirst(first: Long, last: Long, predicate: (Long) -> Boolean): Long {
+    var low = first
+    var high = last
 
     while (low <= high) {
         val mid = low.and(high) + low.xor(high).shr(1)
@@ -88,6 +51,7 @@ fun LongRange.bsFirst(predicate: (Long) -> Boolean): Long {
     }
     return low
 }
+inline fun LongRange.bsFirst(predicate: (Long) -> Boolean) = bsFirst(first, last, predicate)
 
-inline fun LongRange.bsLast(crossinline predicate: (Long) -> Boolean) = 
-    bsFirst { !predicate(it) } - 1
+inline fun bsLast(first: Long, last: Long, predicate: (Long) -> Boolean) = bsFirst(first, last) { !predicate(it) } - 1
+inline fun LongRange.bsLast(predicate: (Long) -> Boolean) = bsLast(first, last, predicate)

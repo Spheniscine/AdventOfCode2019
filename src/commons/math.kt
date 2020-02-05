@@ -42,9 +42,9 @@ inline fun <T> Iterable<T>.sumByLong(func: (T) -> Long) = fold(0L) { acc, t -> a
 tailrec fun gcd(a: Int, b: Int): Int = if(a == 0) abs(b) else gcd(b % a, a)
 tailrec fun gcd(a: Long, b: Long): Long = if(a == 0L) abs(b) else gcd(b % a, a)
 
-inline infix fun Int.umod(base: Int) = Math.floorMod(this, base)
-inline infix fun Long.umod(base: Long) = Math.floorMod(this, base)
-inline infix fun Long.umod(base: Int) = Math.floorMod(this, base.toLong()).toInt()
+infix fun Int.umod(mod: Int): Int = (this % mod).let { (it shr Int.SIZE_BITS - 1 and mod) + it }
+infix fun Long.umod(mod: Long) = (this % mod).let { (it shr Long.SIZE_BITS - 1 and mod) + it }
+infix fun Long.umod(mod: Int) = umod(mod.toLong()).toInt()
 
 inline infix fun Int.divCeil(other: Int) = -(-this divFloor other)
 inline infix fun Int.divFloor(other: Int) = Math.floorDiv(this, other)
