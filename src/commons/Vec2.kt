@@ -17,12 +17,7 @@ data class Vec2(val x: Int, val y: Int) {
     fun manDist(other: Vec2) = abs(x - other.x) + abs(y - other.y)
     fun manDist() = abs(x) + abs(y)
 
-    operator fun plus(dir: Dir2) = when(dir) {
-        Dir2.Right -> Vec2(x+1, y)
-        Dir2.Down -> Vec2(x, y+1)
-        Dir2.Left -> Vec2(x-1, y)
-        Dir2.Up -> Vec2(x, y-1)
-    }
+    operator fun plus(dir: Dir2) = plus(dir.vec)
 
     operator fun plus(other: Vec2) = Vec2(x + other.x, y + other.y)
     operator fun minus(other: Vec2) = Vec2(x - other.x, y - other.y)
@@ -42,7 +37,11 @@ data class Vec2(val x: Int, val y: Int) {
     }
 }
 
-enum class Dir2 { Right, Down, Left, Up;
+enum class Dir2(val vec: Vec2) {
+    Right(Vec2(1, 0)),
+    Down(Vec2(0, 1)),
+    Left(Vec2(-1, 0)),
+    Up(Vec2(0, -1));
     companion object {
         inline val East get() = Right
         inline val South get() = Down
@@ -51,13 +50,16 @@ enum class Dir2 { Right, Down, Left, Up;
 
         val values = values().asList()
 
-        fun fromChar(char: Char) = when(char) {
-            in "RrEe>" -> Right
-            in "DdSsv" -> Down
-            in "LlWw<" -> Left
-            in "UuNn^" -> Up
-            else -> error("Unrecognized direction: $char")
+        private val fromChar by lazy {
+            val arr = arrayOfNulls<Dir2>(128)
+            for(c in "RrEe>") arr[c.toInt()] = Right
+            for(c in "DdSsv") arr[c.toInt()] = Down
+            for(c in "LlWw<") arr[c.toInt()] = Left
+            for(c in "UuNn^") arr[c.toInt()] = Up
+            arr
         }
+
+        fun fromChar(char: Char) = fromChar.getOrNull(char.toInt()) ?: error("Unrecognized direction: $char")
     }
 
     fun right() = values[(ordinal + 1) % 4]

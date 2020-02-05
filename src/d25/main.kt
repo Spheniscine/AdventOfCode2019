@@ -39,7 +39,7 @@ private const val CHECK_ROOM_NAME = "Pressure-Sensitive Floor"
 private val dangerousItems by lazy {
     File("src/d25/res/dangerous.txt").readLines().toCollection(StringHashSet())
 }
-private val passwordRegex by lazy { Regex("""\d+""")}
+private val passwordRegex by lazy { Regex("""\d+""") }
 val Int.numTrailingZeros get() = Integer.numberOfTrailingZeros(this)
 
 class SaintBernardAI(val vm: IntCodeVM) {
