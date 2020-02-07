@@ -1,12 +1,13 @@
+@file:Suppress("NOTHING_TO_INLINE")
 package commons
 
 fun Regex.capture(string: String) = find(string)?.destructured
 
-inline fun <R> get(block: GetScope<R>.() -> Nothing): R = GetScope<R>().invoke(block)
+inline fun <R> get(block: GetScope<R>.() -> R): R = GetScope<R>().invoke(block)
 
 open class GetScope<in R> {
     class Result @Deprecated("Use yield function") constructor(val scope: GetScope<*>, val data: Any?):
-        Throwable(null, null, true, false)
+        Throwable("Uncaught call to GetScope.yield", null, true, false)
     @Suppress("DEPRECATION")
     fun yield(result: R): Nothing { throw Result(this, result) }
 }
@@ -21,8 +22,7 @@ inline operator fun <R, G: GetScope<R>> G.invoke(block: G.() -> R): R =
         r.data as R
     }
 
-
-inline fun <R> regexWhen(string: String, block: RegexWhen<R>.() -> Nothing): R = RegexWhen<R>(string).invoke(block)
+inline fun <R> regexWhen(string: String, block: RegexWhen<R>.() -> R): R = RegexWhen<R>(string).invoke(block)
 
 class RegexWhen<in R>(val regexWhenArg: String): GetScope<R>() {
     inline infix fun Regex.then(block: (MatchResult.Destructured) -> R) { capture(regexWhenArg)?.let { yield(block(it)) } }

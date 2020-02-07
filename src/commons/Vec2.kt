@@ -62,13 +62,13 @@ enum class Dir2(val vec: Vec2) {
         fun fromChar(char: Char) = fromChar.getOrNull(char.toInt()) ?: error("Unrecognized direction: $char")
     }
 
-    fun right() = values[(ordinal + 1) % 4]
+    fun right() = values[ordinal + 1 and 3]
     inline operator fun inc() = right()
 
-    fun left() = values[(ordinal + 3) % 4]
+    fun left() = values[ordinal + 3 and 3]
     inline operator fun dec() = left()
 
-    fun opposite() = values[(ordinal + 2) % 4]
+    fun opposite() = values[ordinal + 2 and 3]
     inline operator fun unaryMinus() = opposite()
 }
 
