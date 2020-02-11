@@ -46,13 +46,13 @@ infix fun Int.umod(mod: Int): Int = (this % mod).let { (it shr Int.SIZE_BITS - 1
 infix fun Long.umod(mod: Long) = (this % mod).let { (it shr Long.SIZE_BITS - 1 and mod) + it }
 infix fun Long.umod(mod: Int) = umod(mod.toLong()).toInt()
 
-inline infix fun Int.divCeil(other: Int) = -(-this divFloor other)
+infix fun Int.divCeil(other: Int) =
+    (this / other).let { if(xor(other) >= 0 && it * other != this) it+1 else it }
+
 inline infix fun Int.divFloor(other: Int) = Math.floorDiv(this, other)
-inline infix fun Long.divCeil(other: Long) = -(-this divFloor other)
+
+infix fun Long.divCeil(other: Long) =
+    (this / other).let { if(xor(other) >= 0 && it * other != this) it+1 else it }
+
 inline infix fun Long.divFloor(other: Long) = Math.floorDiv(this, other)
 
-inline fun <T> T.iterate(times: Int, func: (T) -> T): T {
-    var res = this
-    repeat(times) { res = func(res) }
-    return res
-}

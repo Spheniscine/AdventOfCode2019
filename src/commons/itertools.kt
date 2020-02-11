@@ -52,5 +52,3 @@ fun <T> Iterable<T>.permutations(length: Int? = null): Sequence<List<T>> =
         }
     }
 
-fun <T> MutableList<T>.pop() = removeAt(lastIndex)
-fun <T> MutableList<T>.poll() = if(isEmpty()) null else pop()
