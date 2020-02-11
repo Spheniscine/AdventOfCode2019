@@ -62,25 +62,29 @@ fun main() {
 
     val ans1 = run {
         val closed = hashSetOf(start)
-        val open = ArrayDeque<BFSEntry>()
-        open.add(BFSEntry(start, 0))
+        val open = ArrayDeque<Vec2>()
+        open.add(start)
 
-        while(true) {
-            val (pos, cost) = open.poll() ?: break
-            if(pos == end) return@run cost
+        var cost = 0
+        while(open.isNotEmpty()) {
+            repeat(open.size) {
+                val pos = open.remove()
+                if (pos == end) return@run cost
 
-            val neighbors = mutableListOf<Vec2>()
-            for(dir in Dir2.values) {
-                val npos = pos + dir
-                if(grid[npos] == '.') neighbors.add(npos)
-            }
-            warps[pos]?.let { neighbors.add(it) }
+                val neighbors = mutableListOf<Vec2>()
+                for (dir in Dir2.values) {
+                    val npos = pos + dir
+                    if (grid[npos] == '.') neighbors.add(npos)
+                }
+                warps[pos]?.let { neighbors.add(it) }
 
-            for(npos in neighbors) {
-                if(closed.add(npos)) {
-                    open.add(BFSEntry(npos, cost + 1))
+                for (npos in neighbors) {
+                    if (closed.add(npos)) {
+                        open.add(npos)
+                    }
                 }
             }
+            cost++
         }
 
         -1
@@ -95,26 +99,31 @@ fun main() {
         for(src in sequenceOf(start) + warps.keys) {
             val successors = mutableListOf<SuccEntry>()
             val closed = hashSetOf(src)
-            val open = ArrayDeque<BFSEntry>()
-            open.add(BFSEntry(src, 0))
+            val open = ArrayDeque<Vec2>()
+            open.add(src)
 
-            while(true) {
-                val (pos, cost) = open.poll() ?: break
+            var cost = 0
+            while(open.isNotEmpty()) {
+                repeat(open.size) {
+                    val pos = open.remove()
 
-                for(dir in Dir2.values) {
-                    val npos = pos + dir
-                    val tile = grid[npos]
-                    if(tile != '.' || closed.add(npos).not()) continue
-                    when {
-                        npos == end -> successors.add(SuccEntry(npos, 0, cost + 1))
-                        warps.containsKey(npos) -> {
-                            // if gate is on outer edge, our z will decrease, otherwise it will increase
-                            val dz = if ((npos.x == 2 || npos.x == w-3) || (npos.y == 2 || npos.y == h-3)) -1 else 1
-                            successors.add(SuccEntry(warps[npos]!!, dz, cost + 2))
+                    for (dir in Dir2.values) {
+                        val npos = pos + dir
+                        val tile = grid[npos]
+                        if (tile != '.' || closed.add(npos).not()) continue
+                        when {
+                            npos == end -> successors.add(SuccEntry(npos, 0, cost + 1))
+                            warps.containsKey(npos) -> {
+                                // if gate is on outer edge, our z will decrease, otherwise it will increase
+                                val dz =
+                                    if ((npos.x == 2 || npos.x == w - 3) || (npos.y == 2 || npos.y == h - 3)) -1 else 1
+                                successors.add(SuccEntry(warps[npos]!!, dz, cost + 2))
+                            }
                         }
+                        open.add(npos)
                     }
-                    open.add(BFSEntry(npos, cost + 1))
                 }
+                cost++
             }
             ans[src] = successors
         }
@@ -156,7 +165,6 @@ fun main() {
 operator fun List<String>.get(x: Int, y: Int) = if(y in indices && x in this[y].indices) this[y][x] else ' '
 operator fun List<String>.get(pos: Vec2) = this[pos.x, pos.y]
 
-data class BFSEntry(val pos: Vec2, val cost: Int)
 data class SuccEntry(val pos: Vec2, val dz: Int, val cost: Int)
 data class Cost<T>(val state: T, val cost: Int)
 

@@ -63,31 +63,34 @@ class Droid(val prog: List<Long>) {
         }
     }
 
-    data class BFSEntry(val pos: Vec2, val cost: Int)
     data class Answer(val ans1: Int, val ans2: Int)
 
     fun solve(): Answer {
         explore()
         val oxygen = this.oxygen ?: error("Oxygen system not found.")
 
-        val open = ArrayDeque<BFSEntry>()
-        open.add(BFSEntry(oxygen, 0))
+        val open = ArrayDeque<Vec2>()
+        open.add(oxygen)
         val closed = HashSet<Vec2>()
         closed.add(oxygen)
 
         var ans1 = 0
         var ans2 = 0
+        var cost = 0
 
         while(open.isNotEmpty()) {
-            val (pos, cost) = open.remove()
-            for(dir in Dir2.values) {
-                val npos = pos + dir
-                if(npos == Vec2.ORIGIN) ans1 = cost + 1
-                if(map[npos] == true && closed.add(npos)) {
-                    ans2 = cost + 1
-                    open.add(BFSEntry(npos, ans2))
+            repeat(open.size) {
+                val pos = open.remove()
+                for (dir in Dir2.values) {
+                    val npos = pos + dir
+                    if (npos == Vec2.ORIGIN) ans1 = cost + 1
+                    if (map[npos] == true && closed.add(npos)) {
+                        ans2 = cost + 1
+                        open.add(npos)
+                    }
                 }
             }
+            cost++
         }
 
         return Answer(ans1, ans2)

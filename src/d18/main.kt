@@ -37,23 +37,27 @@ fun main() {
             val successors = mutableListOf<SuccEntry>()
             val closed = hashSetOf(initPos)
             val open = ArrayDeque<BFSEntry>()
-            open.add(BFSEntry(initPos, 0, 0))
+            open.add(BFSEntry(initPos, 0))
 
-            while(true) {
-                val (pos, _mask, cost) = open.poll() ?: break
+            var cost = 0
+            while(open.isNotEmpty()) {
+                repeat(open.size) {
+                    val (pos, _mask) = open.remove()
 
-                // Pretend a key is also its own door, blocking other keys behind it.
-                // This significantly prunes the search tree, as it prevents walking past keys without activating them.
-                val mask = grid[pos].let { if(it in 'a'..'z') _mask.setBit(it - 'a') else _mask }
+                    // Pretend a key is also its own door, blocking other keys behind it.
+                    // This significantly prunes the search tree, as it prevents walking past keys without activating them.
+                    val mask = grid[pos].let { if (it in 'a'..'z') _mask.setBit(it - 'a') else _mask }
 
-                for(dir in Dir2.values) {
-                    val npos = pos + dir
-                    val tile = grid[npos]
-                    if(tile == '#' || closed.add(npos).not()) continue
-                    val nmask = if(tile in 'A'..'Z') mask.setBit(tile - 'A') else mask
-                    if(src != tile && tile in 'a'..'z') successors.add(SuccEntry(tile, nmask, cost + 1))
-                    open.add(BFSEntry(npos, nmask, cost + 1))
+                    for (dir in Dir2.values) {
+                        val npos = pos + dir
+                        val tile = grid[npos]
+                        if (tile == '#' || closed.add(npos).not()) continue
+                        val nmask = if (tile in 'A'..'Z') mask.setBit(tile - 'A') else mask
+                        if (src != tile && tile in 'a'..'z') successors.add(SuccEntry(tile, nmask, cost + 1))
+                        open.add(BFSEntry(npos, nmask))
+                    }
                 }
+                cost++
             }
             ans[src] = successors
         }
@@ -118,7 +122,7 @@ operator fun List<CharArray>.set(pos: Vec2, v: Char) { this[pos.y][pos.x] = v }
 inline fun Int.getBit(i: Int) = shr(i) and 1 == 1
 inline fun Int.setBit(i: Int) = or(1 shl i)
 
-data class BFSEntry(val pos: Vec2, val mask: Int, val cost: Int)
+data class BFSEntry(val pos: Vec2, val mask: Int)
 data class SuccEntry(val dest: Char, val mask: Int, val cost: Int)
 data class Cost<T>(val state: T, val cost: Int)
 @Suppress("EqualsOrHashCode")
