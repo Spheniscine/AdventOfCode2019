@@ -82,39 +82,40 @@ fun solve(x: Long, m: Long, k: Long): Long {
     return (x.mulMod(c, m) + d) % m
 }
 
-// may be inaccurate for moduli > 50+ bits?
 fun Long.mulMod(other: Long, m: Long): Long {
     val a = this umod m
     val b = other umod m
-    val aHi = a ushr 32
-    val bHi = b ushr 32
-    val aLo = a and 0xFFFFFFFFL
-    val bLo = b and 0xFFFFFFFFL
-
-    var res = (aHi * bHi).shl32Mod(m)
-    res += aHi * bLo
-    if(res < 0) {
-        res = res.ulMod(m)
+    var hi = Math.multiplyHigh(a, b) shl 1
+    var lo = a * b
+    if(lo < 0) {
+        hi = hi or 1
+        lo = lo xor Long.MIN_VALUE
     }
-    res += aLo * bHi
-    res = res.shl32Mod(m)
-    res += (aLo * bLo).ulMod(m)
-    return (res - m).let { (it shr Long.SIZE_BITS - 1 and m) + it }
+
+    val res = hi.shl63Mod(m) + lo % m - m
+    return (res shr Long.SIZE_BITS - 1 and m) + res
 }
 
-inline val ULong.numLeadingZeroes get() = java.lang.Long.numberOfLeadingZeros(this.toLong())
-private fun Long.shl32Mod(m: Long): Long {
-    var a = toULong()
-    val m = m.toULong()
-    var remShift = 32
-    do {
-        val shift = min(remShift, a.numLeadingZeroes)
-        a = a.shl(shift) % m
-        remShift -= shift
-    } while (remShift > 0)
-    return a.toLong()
+inline val Long.numLeadingZeroes get() = java.lang.Long.numberOfLeadingZeros(this)
+private fun Long.shl63Mod(m: Long): Long {
+    var a = this
+    var remShift = 63
+    if(m > Long.MIN_VALUE ushr 1) {
+        do {
+            val shift = min(remShift, a.numLeadingZeroes)
+            a = a.shl(shift)
+            while(a !in 0 until m) a -= m
+            remShift -= shift
+        } while (remShift > 0)
+    } else {
+        do {
+            val shift = min(remShift, a.numLeadingZeroes - 1)
+            a = a.shl(shift) % m
+            remShift -= shift
+        } while (remShift > 0)
+    }
+    return a
 }
-private fun Long.ulMod(m: Long) = (toULong() % m.toULong()).toLong()
 
 fun Long.powMod(exponent: Long, mod: Long): Long {
     if(exponent < 0) error("Inverse not implemented")
