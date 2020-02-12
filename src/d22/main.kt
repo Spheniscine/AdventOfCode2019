@@ -27,31 +27,29 @@ fun main() {
  * n - number of cards
  * k - iterations, positive = get position of card x, negative = get card in position x
  */
-fun solve(x: Long, n: Long, k: Long): Long {
+fun solve(x: Long, m: Long, k: Long): Long {
     // compose basis function
     // f(x) = ax + b
-    var a: BigInteger = BigInteger.ONE
-    var b: BigInteger = BigInteger.ZERO
-
-    val m = n.toBigInteger()
+    var a = 1L
+    var b = 0L
 
     for(ln in instructions) {
         when {
             ln == "deal into new stack" -> {
                 // x → -x - 1; ax + b → -ax - b - 1
-                a = (-a).mod(m)
-                b = b.not().mod(m) // b.not() = -b - 1
+                a = -a umod m
+                b = b.inv() umod m // b.not() = -b - 1
             }
             "cut" in ln -> {
                 // x → x - i; ax + b → ax + b - i
-                val i = ln.split(' ').last().toBigInteger()
-                b = (b - i).mod(m)
+                val i = ln.split(' ').last().toInt()
+                b = b - i umod m
             }
             "deal with increment" in ln -> {
                 // x → x · i; ax + b → aix + bi
-                val i = ln.split(' ').last().toBigInteger()
-                a = a * i % m
-                b = b * i % m
+                val i = ln.split(' ').last().toLong()
+                a = a.mulMod(i, m)
+                b = b.mulMod(i, m)
             }
             else -> error("Unrecognized instruction: $ln")
         }
@@ -59,13 +57,13 @@ fun solve(x: Long, n: Long, k: Long): Long {
 
     // invert basis function. f^-1(x) = (a^-1)(x - b)
     if(k < 0) {
-        a = a.modInverse(m)
-        b = (-b * a).mod(m)
+        a = a.powMod(m-2, m)
+        b = a.mulMod(-b, m)
     }
 
     // start exponentiation for function, f^k(x) = cx + d
-    var c: BigInteger = BigInteger.ONE
-    var d: BigInteger = BigInteger.ZERO
+    var c = 1L
+    var d = 0L
     var e = abs(k)
 
     // exponentiation by squaring. Equivalent to computing
@@ -74,15 +72,41 @@ fun solve(x: Long, n: Long, k: Long): Long {
     while(e > 0) {
         if(e and 1 == 1L) {
             // a(cx + d) + b = acx + (ad + b)
-            c = a * c % m
-            d = (a * d + b) % m
+            c = a.mulMod(c, m)
+            d = (a.mulMod(d, m) + b) % m
         }
         e = e shr 1
-        b = (a * b + b) % m
-        a = a * a % m
+        b = (a.mulMod(b, m) + b) % m
+        a = a.mulMod(a, m)
     }
 
-    return (x.toBigInteger() * c + d).mod(m).toLong()
+    return (x.mulMod(c, m) + d) % m
+}
+
+// may be inaccurate for moduli > 50+ bits?
+fun Long.mulMod(other: Long, m: Long): Long {
+    val a = this % m
+    val b = other % m
+
+    val c = (a.toDouble() * b / m).toLong()
+
+    return (a * b - c * m) umod m
+}
+
+fun Long.powMod(exponent: Long, mod: Long): Long {
+    if(exponent < 0) error("Inverse not implemented")
+    var res = 1L
+    var e = exponent
+    var b = umod(mod)
+
+    while(e > 0) {
+        if(e and 1 == 1L) {
+            res = res.mulMod(b, mod)
+        }
+        e = e shr 1
+        b = b.mulMod(b, mod)
+    }
+    return res
 }
 
 /**
