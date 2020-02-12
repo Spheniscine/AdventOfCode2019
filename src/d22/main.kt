@@ -37,7 +37,7 @@ fun solve(x: Long, m: Long, k: Long): Long {
             ln == "deal into new stack" -> {
                 // x → -x - 1; ax + b → -ax - b - 1
                 a = -a umod m
-                b = b.inv() umod m // b.not() = -b - 1
+                b = b.inv() umod m // b.inv() = -b - 1
             }
             "cut" in ln -> {
                 // x → x - i; ax + b → ax + b - i
@@ -56,7 +56,7 @@ fun solve(x: Long, m: Long, k: Long): Long {
 
     // invert basis function. f^-1(x) = (a^-1)(x - b)
     if(k < 0) {
-        a = a.powMod(m-2, m)
+        a = a.powMod(m-2, m) // modular multiplicative inverse for prime m
         b = a.mulMod(-b, m)
     }
 
@@ -82,9 +82,11 @@ fun solve(x: Long, m: Long, k: Long): Long {
     return (x.mulMod(c, m) + d) % m
 }
 
-fun Long.mulMod(other: Long, m: Long): Long {
-    val a = this umod m
-    val b = other umod m
+fun Long.mulMod(other: Long, m: Long): Long = _mulMod(this umod m, other umod m, m)
+
+// unchecked version, assumes 0 <= a, b < m
+fun _mulMod(a: Long, b: Long, m: Long): Long {
+    if(m <= FLOOR_SQRT_MAX_LONG + 1) return a * b % m
     var hi = Math.multiplyHigh(a, b) shl 1
     var lo = a * b
     if(lo < 0) {
@@ -96,6 +98,7 @@ fun Long.mulMod(other: Long, m: Long): Long {
     return (res shr Long.SIZE_BITS - 1 and m) + res
 }
 
+const val FLOOR_SQRT_MAX_LONG = 3037000499L
 inline val Long.numLeadingZeroes get() = java.lang.Long.numberOfLeadingZeros(this)
 private fun Long.shl63Mod(m: Long): Long {
     var a = this
@@ -125,10 +128,10 @@ fun Long.powMod(exponent: Long, mod: Long): Long {
 
     while(e > 0) {
         if(e and 1 == 1L) {
-            res = res.mulMod(b, mod)
+            res = _mulMod(res, b, mod)
         }
         e = e shr 1
-        b = b.mulMod(b, mod)
+        b = _mulMod(b, b, mod)
     }
     return res
 }
