@@ -2,7 +2,6 @@ package d22
 
 import commons.*
 import java.io.File
-import java.math.BigInteger
 import kotlin.math.*
 
 private val input by lazy { File("src/d22/input/gmail.in").readText() }
@@ -85,13 +84,37 @@ fun solve(x: Long, m: Long, k: Long): Long {
 
 // may be inaccurate for moduli > 50+ bits?
 fun Long.mulMod(other: Long, m: Long): Long {
-    val a = this % m
-    val b = other % m
+    val a = this umod m
+    val b = other umod m
+    val aHi = a ushr 32
+    val bHi = b ushr 32
+    val aLo = a and 0xFFFFFFFFL
+    val bLo = b and 0xFFFFFFFFL
 
-    val c = (a.toDouble() * b / m).toLong()
-
-    return (a * b - c * m) umod m
+    var res = (aHi * bHi).shl32Mod(m)
+    res += aHi * bLo
+    if(res < 0) {
+        res = res.ulMod(m)
+    }
+    res += aLo * bHi
+    res = res.shl32Mod(m)
+    res += (aLo * bLo).ulMod(m)
+    return (res - m).let { (it shr Long.SIZE_BITS - 1 and m) + it }
 }
+
+inline val ULong.numLeadingZeroes get() = java.lang.Long.numberOfLeadingZeros(this.toLong())
+private fun Long.shl32Mod(m: Long): Long {
+    var a = toULong()
+    val m = m.toULong()
+    var remShift = 32
+    do {
+        val shift = min(remShift, a.numLeadingZeroes)
+        a = a.shl(shift) % m
+        remShift -= shift
+    } while (remShift > 0)
+    return a.toLong()
+}
+private fun Long.ulMod(m: Long) = (toULong() % m.toULong()).toLong()
 
 fun Long.powMod(exponent: Long, mod: Long): Long {
     if(exponent < 0) error("Inverse not implemented")
