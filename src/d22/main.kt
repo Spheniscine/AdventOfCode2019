@@ -102,15 +102,17 @@ const val FLOOR_SQRT_MAX_LONG = 3037000499L
 inline val Long.numLeadingZeroes get() = java.lang.Long.numberOfLeadingZeros(this)
 private fun Long.shl63Mod(m: Long): Long {
     var a = this
-    var remShift = 63
+
     if(m > Long.MIN_VALUE ushr 1) {
-        do {
-            val shift = min(remShift, a.numLeadingZeroes)
-            a = a.shl(shift)
-            while(a !in 0 until m) a -= m
-            remShift -= shift
-        } while (remShift > 0)
+        val shift = a.numLeadingZeroes - 1
+        a = a.shl(shift)
+        if(a > m) a -= m
+        repeat(63 - shift) {
+            a = a shl 1
+            if(a !in 0 until m) a -= m
+        }
     } else {
+        var remShift = 63
         do {
             val shift = min(remShift, a.numLeadingZeroes - 1)
             a = a.shl(shift) % m
