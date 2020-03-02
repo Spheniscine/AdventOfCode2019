@@ -86,50 +86,63 @@ fun Long.mulMod(other: Long, m: Long): Long = _mulMod(this umod m, other umod m,
 
 // unchecked version, assumes 0 <= a, b < m
 fun _mulMod(a: Long, b: Long, m: Long): Long {
-    if(m <= FLOOR_SQRT_MAX_LONG + 1) return a * b % m
+    if (m <= FLOOR_SQRT_MAX_LONG + 1) return a * b % m
+    if (m < 1L shl 57) {
+        val g = a.toDouble() * b / m
+        return a * b - g.toLong() * m umod m
+    }
+    if (m > Long.MIN_VALUE ushr 1) return _doubleAndAdd(a, b, m)
     var hi = Math.multiplyHigh(a, b) shl 1
     var lo = a * b
-    if(lo < 0) {
+    if (lo < 0) {
         hi = hi or 1
         lo = lo xor Long.MIN_VALUE
     }
 
-    val res = hi.shl63Mod(m) + lo % m - m
-    return (res shr Long.SIZE_BITS - 1 and m) + res
+    return _norm(hi.shl63Mod(m) + lo % m - m, m)
+}
+
+// normalizes an integer that's within range [-MOD, MOD) without branching
+inline fun _norm(it: Long, mod: Long) = (it shr Long.SIZE_BITS - 1 and mod) + it
+private fun _doubleAndAdd(a: Long, b: Long, m: Long): Long {
+    var res = 0L
+    var b = b
+    var a = a
+    if(a < b) a = b.also { b = a }
+
+    while (b > 0) {
+        if (b and 1 == 1L) {
+            res = _norm(res + a - m, m)
+        }
+        b = b shr 1
+        a = _norm(a.shl(1) - m, m)
+    }
+    return res
 }
 
 const val FLOOR_SQRT_MAX_LONG = 3037000499L
 inline val Long.numLeadingZeroes get() = java.lang.Long.numberOfLeadingZeros(this)
 private fun Long.shl63Mod(m: Long): Long {
+    // assumes 0 <= a < m <= 2^62
     var a = this
+    var remShift = 63
+    do {
+        val shift = min(remShift, a.numLeadingZeroes - 1)
+        a = a.shl(shift) % m
+        remShift -= shift
+    } while (remShift > 0)
 
-    if(m > Long.MIN_VALUE ushr 1) {
-        val shift = a.numLeadingZeroes - 1
-        a = a.shl(shift)
-        if(a > m) a -= m
-        repeat(63 - shift) {
-            a = a shl 1
-            if(a !in 0 until m) a -= m
-        }
-    } else {
-        var remShift = 63
-        do {
-            val shift = min(remShift, a.numLeadingZeroes - 1)
-            a = a.shl(shift) % m
-            remShift -= shift
-        } while (remShift > 0)
-    }
     return a
 }
 
 fun Long.powMod(exponent: Long, mod: Long): Long {
-    if(exponent < 0) error("Inverse not implemented")
+    if (exponent < 0) error("Inverse not implemented")
     var res = 1L
     var e = exponent
     var b = umod(mod)
 
-    while(e > 0) {
-        if(e and 1 == 1L) {
+    while (e > 0) {
+        if (e and 1 == 1L) {
             res = _mulMod(res, b, mod)
         }
         e = e shr 1
