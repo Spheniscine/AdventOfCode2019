@@ -56,7 +56,7 @@ fun main() {
     printTime()
 }
 
-const val TRILLION = 1000000000000
+const val TRILLION = 1e12.toLong()
 
 data class Quantity(val amount: Int, val material: String)
 data class Reaction(val precursors: List<Quantity>, val result: Quantity)
