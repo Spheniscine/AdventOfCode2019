@@ -5,8 +5,7 @@ package commons
  */
 fun <T> Iterable<T>.combinations(length: Int): Sequence<List<T>> =
     sequence {
-        @Suppress("UNCHECKED_CAST")
-        val pool = this as? List<T> ?: toList()
+        val pool = this@combinations as? List<T> ?: toList()
         val n = pool.size
         if(length > n) return@sequence
         val indices = IntArray(length) { it }
@@ -24,8 +23,7 @@ fun <T> Iterable<T>.combinations(length: Int): Sequence<List<T>> =
 
 fun <T> Iterable<T>.permutations(length: Int? = null): Sequence<List<T>> =
     sequence {
-        @Suppress("UNCHECKED_CAST")
-        val pool = this as? List<T> ?: toList()
+        val pool = this@permutations as? List<T> ?: toList()
         val n = pool.size
         val r = length ?: n
         if(r > n) return@sequence
