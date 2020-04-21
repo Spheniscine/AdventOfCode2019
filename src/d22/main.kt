@@ -36,13 +36,13 @@ fun solve(x: Long, m: Long, k: Long): Long {
         when {
             ln == "deal into new stack" -> {
                 // x → -x - 1; ax + b → -ax - b - 1
-                a = -a umod m
-                b = b.inv() umod m // b.inv() = -b - 1
+                a = -a modulo m
+                b = b.inv() modulo m // b.inv() = -b - 1
             }
             "cut" in ln -> {
                 // x → x - i; ax + b → ax + b - i
                 val i = ln.split(' ').last().toInt()
-                b = b - i umod m
+                b = b - i modulo m
             }
             "deal with increment" in ln -> {
                 // x → x · i; ax + b → aix + bi
@@ -82,14 +82,14 @@ fun solve(x: Long, m: Long, k: Long): Long {
     return (x.mulMod(c, m) + d) % m
 }
 
-fun Long.mulMod(other: Long, m: Long): Long = _mulMod(this umod m, other umod m, m)
+fun Long.mulMod(other: Long, m: Long): Long = _mulMod(this modulo m, other modulo m, m)
 
 // unchecked version, assumes 0 <= a, b < m
 fun _mulMod(a: Long, b: Long, m: Long): Long {
     if (m <= FLOOR_SQRT_MAX_LONG + 1) return a * b % m
     if (m < 1L shl 57) {
         val g = a.toDouble() * b / m
-        return a * b - g.toLong() * m umod m
+        return a * b - g.toLong() * m modulo m
     }
     if (m > Long.MIN_VALUE ushr 1) return _doubleAndAdd(a, b, m)
     var hi = Math.multiplyHigh(a, b) shl 1
@@ -139,7 +139,7 @@ fun Long.powMod(exponent: Long, mod: Long): Long {
     if (exponent < 0) error("Inverse not implemented")
     var res = 1L
     var e = exponent
-    var b = umod(mod)
+    var b = modulo(mod)
 
     while (e > 0) {
         if (e and 1 == 1L) {
@@ -163,7 +163,7 @@ fun doShuffle(n: Int, k: Int): IntArray {
                 "cut" in ln -> {
                     val arg = ln.split(' ').last().toInt()
                     val new = IntArray(n) { i ->
-                        deck[i + arg umod n]
+                        deck[i + arg modulo n]
                     }
                     new.copyInto(deck)
                 }
