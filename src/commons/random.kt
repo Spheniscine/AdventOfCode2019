@@ -14,7 +14,7 @@ class PCGRandom(seed: Long, seq: Long): Random() {
     private var state = 0L
     private val inc = seq shl 1 or 1
 
-    override fun nextBits(bitCount: Int): Int = nextInt().ushr(Int.SIZE_BITS - bitCount)
+    override fun nextBits(bitCount: Int): Int = nextInt().ushr(32 - bitCount) and (-bitCount).shr(31)
 
     override fun nextInt(): Int {
         val old = state
